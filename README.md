@@ -1,0 +1,42 @@
+# Yay Job
+
+家庭内労働を管理するアプリ（PWA）
+
+## GitHub Pages での公開手順
+
+1. このフォルダの中身（`index.html`, `manifest.json`, `sw.js`, `icons/` フォルダ）をすべて GitHub リポジトリにアップロードする
+2. リポジトリの **Settings → Pages** を開く
+3. **Source** を `main` ブランチ（フォルダはルート `/` または該当フォルダ）に設定して保存
+4. 数分待つと `https://ユーザー名.github.io/リポジトリ名/` で公開される
+
+## ファイル構成
+
+```
+yayjob-app/
+├── index.html          メインアプリ
+├── manifest.json       PWA 設定（アプリ名・アイコン・色）
+├── sw.js               オフライン対応（Service Worker）
+└── icons/
+    ├── icon-192.png        Android 用アイコン
+    ├── icon-512.png        高解像度・スプラッシュ用
+    └── apple-touch-icon.png iPhone 用アイコン
+```
+
+## ホーム画面に追加する方法
+
+### iPhone（Safari）
+1. 公開された URL を Safari で開く
+2. 共有ボタン（□↑）をタップ
+3. 「ホーム画面に追加」を選ぶ
+
+### Pixel / Android（Chrome）
+1. 公開された URL を Chrome で開く
+2. 右上のメニュー（︙）をタップ
+3. 「アプリをインストール」または「ホーム画面に追加」を選ぶ
+
+ホーム画面から起動すると、ブラウザのバーが消えてアプリのように全画面で使えます。
+
+## 注意
+
+- データは各端末の中だけに保存されます（端末をまたいだ共有はされません）
+- レポートタブから週次レポートをコピーして LINE に貼り付けて共有できます

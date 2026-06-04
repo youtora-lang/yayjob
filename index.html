@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yay Job</title>
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#F5CC2F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Yay Job">
+<meta name="mobile-web-app-capable" content="yes">
+
+<style>
+:root {
+  --cream: #F0DFA0;
+  --yellow: #F5CC2F;
+  --gold: #E8AA10;
+  --brown: #9E6020;
+  --brown-dark: #6B3F10;
+  --brown-light: #C8832A;
+  --bg: #FFFBF0;
+  --white: #FFFFFF;
+  --shadow: rgba(158,96,32,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Maru Gothic ProN', 'Hiragino Maru Gothic Pro', 'BIZ UDPGothic', 'Meiryo', sans-serif; background: var(--bg); color: var(--brown); min-height: 100vh; font-size: 15px; }
+
+.header {
+  background: var(--yellow);
+  padding: 14px 20px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.header-title { display: flex; align-items: center; gap: 10px; }
+.header-sub { font-size: 11px; color: var(--brown); font-weight: 500; }
+.name-pill {
+  background: var(--brown); color: var(--cream);
+  border-radius: 20px; padding: 6px 14px;
+  font-size: 13px; font-weight: 700; cursor: pointer; border: none; font-family: inherit;
+}
+
+/* NAME SETUP OVERLAY */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(158,96,32,0.35);
+  z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.overlay-card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 32px 24px; width: 100%; max-width: 360px;
+  box-shadow: 0 8px 32px var(--shadow);
+}
+.overlay-title { margin-bottom: 6px; }
+.overlay-sub { font-size: 13px; color: var(--brown-light); text-align: center; margin-bottom: 24px; }
+
+/* NAV */
+.nav-tabs {
+  display: flex; background: var(--cream);
+  border-bottom: 2px solid var(--gold);
+  overflow-x: auto; scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  flex: 1; min-width: 60px; padding: 11px 6px;
+  text-align: center; font-size: 12px; font-weight: 700;
+  color: var(--brown); opacity: 0.5; cursor: pointer;
+  border: none; background: none; font-family: inherit;
+  white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -2px;
+}
+.nav-tab.active { opacity: 1; border-bottom-color: var(--brown); }
+
+.main { padding: 16px; max-width: 600px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+
+.card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 18px; margin-bottom: 14px;
+  box-shadow: 0 2px 8px var(--shadow); border: 1.5px solid var(--cream);
+}
+.card-title {
+  font-size: 14px; font-weight: 800; color: var(--brown-dark);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
+}
+.badge { background: var(--yellow); color: var(--brown-dark); border-radius: 8px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+
+.task-item {
+  border: 1.5px solid var(--cream); border-radius: var(--radius-sm);
+  padding: 14px; margin-bottom: 10px; background: var(--bg); transition: all 0.15s;
+}
+.task-item.done { background: #f6ffe8; border-color: #b5d99c; }
+.task-item.missed { background: #fff4f4; border-color: #f0b0b0; opacity: 0.7; }
+.task-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.task-name { font-size: 15px; font-weight: 700; color: var(--brown-dark); }
+.task-meta { font-size: 11px; color: var(--brown-light); margin-top: 3px; }
+.task-pay { background: var(--gold); color: var(--white); border-radius: 8px; padding: 3px 10px; font-size: 13px; font-weight: 800; white-space: nowrap; }
+.task-pay-sub { font-size: 10px; color: var(--brown-light); text-align: right; margin-top: 2px; }
+.task-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+.btn { border: none; border-radius: 8px; padding: 7px 14px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+.btn-done { background: var(--yellow); color: var(--brown-dark); }
+.btn-done:hover { background: var(--gold); color: var(--white); }
+.btn-miss { background: var(--cream); color: var(--brown); }
+.btn-miss:hover { background: #f0b0b0; color: #a00; }
+.btn-primary { background: var(--gold); color: var(--white); }
+.btn-primary:hover { background: var(--brown); }
+.btn-danger { background: #fde8e8; color: #c00; }
+.btn-danger:hover { background: #f0b0b0; }
+
+.quality-row { display: flex; gap: 6px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+.quality-label { font-size: 11px; color: var(--brown); font-weight: 600; }
+.quality-btn { border: 1.5px solid var(--cream); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; background: var(--white); color: var(--brown); cursor: pointer; font-family: inherit; }
+.quality-btn.selected { background: var(--yellow); border-color: var(--gold); color: var(--brown-dark); }
+
+.status-badge { display: inline-block; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+.status-done { background: #d4f0c0; color: #3a7a10; }
+.status-miss { background: #fde8e8; color: #c00; }
+.status-pending { background: var(--cream); color: var(--brown); }
+.status-paid { background: #cce8ff; color: #0055aa; }
+.status-prepaid { background: #e8d0ff; color: #5500aa; }
+
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 700; color: var(--brown); margin-bottom: 5px; display: block; }
+.form-input, .form-select {
+  width: 100%; border: 1.5px solid var(--cream); border-radius: 8px;
+  padding: 9px 12px; font-family: inherit; font-size: 14px;
+  color: var(--brown-dark); background: var(--bg); outline: none;
+}
+.form-input:focus, .form-select:focus { border-color: var(--gold); }
+.form-row { display: flex; gap: 10px; }
+.form-row .form-group { flex: 1; }
+.day-check-group { display: flex; flex-wrap: wrap; gap: 6px; }
+.day-check { border: 1.5px solid var(--cream); border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 700; cursor: pointer; background: var(--bg); color: var(--brown); font-family: inherit; }
+.day-check.selected { background: var(--yellow); border-color: var(--gold); color: var(--brown-dark); }
+
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.summary-box { background: var(--cream); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+.summary-num { font-size: 26px; font-weight: 800; color: var(--brown-dark); line-height: 1.1; }
+.summary-label { font-size: 11px; color: var(--brown); margin-top: 3px; font-weight: 600; }
+
+.report-box { background: var(--cream); border-radius: var(--radius-sm); padding: 16px; font-size: 13px; color: var(--brown-dark); white-space: pre-wrap; line-height: 1.7; word-break: break-all; }
+.copy-btn { width: 100%; padding: 13px; border-radius: var(--radius-sm); border: none; background: var(--gold); color: var(--white); font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; transition: background 0.15s; }
+.copy-btn:hover { background: var(--brown); }
+.copy-btn.copied { background: #4caf50; }
+
+.pay-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--cream); gap: 8px; }
+.pay-row:last-child { border-bottom: none; }
+.pay-info { flex: 1; }
+.pay-name { font-size: 14px; font-weight: 700; color: var(--brown-dark); }
+.pay-detail { font-size: 11px; color: var(--brown-light); margin-top: 2px; }
+.pay-amount { font-size: 16px; font-weight: 800; color: var(--gold); white-space: nowrap; }
+.pay-actions { display: flex; gap: 6px; }
+
+.empty { text-align: center; padding: 40px 20px; color: var(--brown-light); font-size: 14px; }
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--brown-dark); color: var(--cream); border-radius: 20px; padding: 10px 22px; font-size: 13px; font-weight: 700; z-index: 999; transition: transform 0.3s ease; pointer-events: none; white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.date-bar { display: flex; align-items: center; justify-content: space-between; background: var(--cream); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 14px; }
+.date-text { font-size: 14px; font-weight: 700; color: var(--brown-dark); }
+.date-nav { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--brown); padding: 0 4px; }
+
+.admin-task-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--cream); gap: 8px; }
+.admin-task-row:last-child { border-bottom: none; }
+
+.balance-card {
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+  text-align: center;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.balance-card.positive { background: #fff4f4; border: 2px solid #f0b0b0; }
+.balance-card.zero { background: #f6ffe8; border: 2px solid #b5d99c; }
+.balance-card.negative { background: var(--cream); border: 2px solid var(--gold); }
+.balance-title { font-size: 12px; font-weight: 700; color: var(--brown); margin-bottom: 6px; }
+.balance-num { font-size: 36px; font-weight: 800; line-height: 1.1; }
+.balance-num.positive { color: #c00; }
+.balance-num.zero { color: #3a7a10; }
+.balance-num.negative { color: var(--brown-dark); }
+.balance-sub { font-size: 11px; color: var(--brown-light); margin-top: 6px; line-height: 1.6; }
+.prepay-form { display: flex; gap: 8px; margin-top: 14px; }
+.prepay-form input { flex: 1; }
+.admin-task-info { flex: 1; }
+.admin-task-name { font-size: 14px; font-weight: 700; color: var(--brown-dark); }
+.admin-task-meta { font-size: 11px; color: var(--brown-light); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- NAME SETUP OVERLAY -->
+<div class="overlay" id="nameOverlay">
+  <div class="overlay-card">
+    <div class="overlay-title" style="display:flex;flex-direction:column;align-items:center;gap:8px;font-size:36px;"><img src="icons/icon-192.png" style="height:52px;width:52px;border-radius:12px;display:block;" alt="Yay Job"><span style="font-family:Georgia,serif;font-style:italic;font-weight:700;color:#6B3F10;letter-spacing:1.5px;">Yay Job</span></div>
+    <div class="overlay-sub">あなたの名前を入力してください</div>
+    <div class="form-group">
+      <input class="form-input" id="nameInput" placeholder="名前" maxlength="20" style="font-size:16px;padding:12px;">
+    </div>
+    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px" onclick="saveName()">はじめる</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-title" style="display:flex;align-items:center;gap:10px;font-size:24px;"><img src="icons/icon-192.png" style="height:36px;width:36px;border-radius:8px;display:block;" alt="Yay Job"><span style="font-family:Georgia,serif;font-style:italic;font-weight:700;color:#6B3F10;letter-spacing:1px;">Yay Job</span></div>
+    
+  </div>
+
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs" id="navTabs" style="display:none">
+  <button class="nav-tab active" onclick="showTab('today')" id="tab-today">今日</button>
+  <button class="nav-tab" onclick="showTab('week')" id="tab-week">週間</button>
+  <button class="nav-tab" onclick="showTab('payment')" id="tab-payment">支払い</button>
+  <button class="nav-tab" onclick="showTab('report')" id="tab-report">レポート</button>
+  <button class="nav-tab" onclick="showTab('settings')" id="tab-settings">設定</button>
+</div>
+
+<div class="main" id="mainContent" style="display:none">
+
+  <!-- TODAY -->
+  <div class="section active" id="section-today">
+    <div class="date-bar">
+      <button class="date-nav" onclick="changeDate(-1)">‹</button>
+      <span class="date-text" id="dateDisplay"></span>
+      <button class="date-nav" onclick="changeDate(1)">›</button>
+    </div>
+    <div id="todayTaskList"></div>
+  </div>
+
+  <!-- WEEK -->
+  <div class="section" id="section-week">
+    <div class="card">
+      <div class="card-title">今週のサマリー</div>
+      <div class="summary-grid" id="weekSummary"></div>
+    </div>
+    <div id="weekList"></div>
+  </div>
+
+  <!-- PAYMENT -->
+  <div class="section" id="section-payment">
+    <div id="paymentContent"></div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="section" id="section-report">
+    <div class="card">
+      <div class="card-title">週次レポート</div>
+      <div class="report-box" id="reportText"></div>
+      <button class="copy-btn" onclick="copyReport()" id="copyBtn">LINEにコピー</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="section" id="section-settings">
+    <div class="card">
+      <div class="card-title">プロフィール</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:14px;font-weight:700;color:var(--brown-dark)" id="settingsNameDisplay"></span>
+        <button class="btn btn-primary" onclick="showNameOverlay()">名前を変更</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">タスクを追加</div>
+      <div class="form-group">
+        <label class="form-label">タスク名</label>
+        <input class="form-input" id="taskName" placeholder="例：食器洗い">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">対価（15分あたり・円）</label>
+          <input class="form-input" id="taskPay" type="number" placeholder="例：50">
+        </div>
+        <div class="form-group">
+          <label class="form-label">所要時間（分）</label>
+          <input class="form-input" id="taskDuration" type="number" placeholder="例：30">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">作業OK 開始時間</label>
+          <input class="form-input" id="taskStart" type="time">
+        </div>
+        <div class="form-group">
+          <label class="form-label">作業OK 終了時間</label>
+          <input class="form-input" id="taskEnd" type="time">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">実施する曜日</label>
+        <div class="day-check-group" id="dayChecks"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">品質基準（任意）</label>
+        <input class="form-input" id="taskQuality" placeholder="例：汚れが残らないこと">
+      </div>
+      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px" onclick="addTask()">追加する</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">登録済みタスク</div>
+      <div id="adminTaskList"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DAYS = ['日','月','火','水','木','金','土'];
+const DAYS_FULL = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+let currentDate = new Date(); currentDate.setHours(0,0,0,0);
+
+function gs(key, def) { try { return JSON.parse(localStorage.getItem('yayjob_' + key)) ?? def; } catch { return def; } }
+function ss(key, val) { localStorage.setItem('yayjob_' + key, JSON.stringify(val)); }
+function getTasks() { return gs('tasks', []); }
+function setTasks(t) { ss('tasks', t); }
+function getLogs() { return gs('logs', {}); }
+function setLogs(l) { ss('logs', l); }
+function getPayments() { return gs('payments', []); }
+function setPayments(p) { ss('payments', p); }
+function getName() { return gs('name', ''); }
+function setName(n) { ss('name', n); }
+
+function dateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function calcTotalPay(per15, min) { return Math.round(Number(per15) * Number(min) / 15); }
+
+// INIT
+window.onload = () => {
+  const name = getName();
+  if (!name) {
+    document.getElementById('nameOverlay').style.display = 'flex';
+  } else {
+    startApp(name);
+  }
+  // build day checks
+  const dc = document.getElementById('dayChecks');
+  DAYS.forEach((d, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'day-check'; btn.textContent = d;
+    btn.dataset.day = DAYS_FULL[i];
+    btn.onclick = () => btn.classList.toggle('selected');
+    dc.appendChild(btn);
+  });
+};
+
+function saveName() {
+  const n = document.getElementById('nameInput').value.trim();
+  if (!n) { showToast('名前を入力してください'); return; }
+  setName(n);
+  document.getElementById('nameOverlay').style.display = 'none';
+  startApp(n);
+  const nd = document.getElementById('settingsNameDisplay');
+  if (nd) nd.textContent = n;
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('nameOverlay').style.display !== 'none') saveName();
+});
+
+function showNameOverlay() {
+  document.getElementById('nameInput').value = getName();
+  document.getElementById('nameOverlay').style.display = 'flex';
+}
+
+function startApp(name) {
+  const nd = document.getElementById('settingsNameDisplay');
+  if (nd) nd.textContent = name;
+  document.getElementById('navTabs').style.display = 'flex';
+  document.getElementById('mainContent').style.display = 'block';
+  renderToday();
+  renderSettings();
+}
+
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'week') renderWeek();
+  if (name === 'payment') renderPayment();
+  if (name === 'report') renderReport();
+}
+
+function changeDate(dir) {
+  currentDate.setDate(currentDate.getDate() + dir);
+  renderToday();
+}
+
+function renderToday() {
+  const dk = dateKey(currentDate);
+  const isToday = dateKey(new Date()) === dk;
+  const dayLabel = DAYS[currentDate.getDay()];
+  document.getElementById('dateDisplay').textContent =
+    `${currentDate.getMonth()+1}月${currentDate.getDate()}日（${dayLabel}）${isToday ? ' ← 今日' : ''}`;
+
+  const tasks = getTasks().filter(t => t.days && t.days.includes(DAYS_FULL[currentDate.getDay()]));
+  const logs = getLogs();
+  const dayLogs = logs[dk] || {};
+  const el = document.getElementById('todayTaskList');
+
+  if (!tasks.length) {
+    el.innerHTML = '<div class="empty">今日のタスクはありません</div>'; return;
+  }
+
+  el.innerHTML = tasks.map(t => {
+    const log = dayLogs[t.id] || {};
+    const isDone = log.status === 'done';
+    const isMissed = log.status === 'missed';
+
+    let statusBadge = isDone
+      ? '<span class="status-badge status-done">完了</span>'
+      : isMissed ? '<span class="status-badge status-miss">未実施</span>'
+      : '<span class="status-badge status-pending">未記録</span>';
+
+    let qualitySection = '';
+    if (isDone && t.qualityCriteria) {
+      const q = log.quality || '';
+      qualitySection = `<div class="quality-row">
+        <span class="quality-label">品質：</span>
+        <button class="quality-btn ${q==='perfect'?'selected':''}" onclick="setQuality('${dk}','${t.id}','perfect')">◎ 完璧</button>
+        <button class="quality-btn ${q==='ok'?'selected':''}" onclick="setQuality('${dk}','${t.id}','ok')">○ OK</button>
+        <button class="quality-btn ${q==='partial'?'selected':''}" onclick="setQuality('${dk}','${t.id}','partial')">△ 一部</button>
+      </div>`;
+    }
+
+    let actions = (!isDone && !isMissed)
+      ? `<div class="task-actions">
+          <button class="btn btn-done" onclick="markTask('${dk}','${t.id}','done')">やった！</button>
+          <button class="btn btn-miss" onclick="markTask('${dk}','${t.id}','missed')">やらなかった</button>
+        </div>`
+      : `<div class="task-actions">
+          <button class="btn btn-miss" onclick="markTask('${dk}','${t.id}','pending')">↩ 取り消し</button>
+        </div>`;
+
+    return `<div class="task-item ${isDone?'done':isMissed?'missed':''}">
+      <div class="task-header">
+        <div>
+          <div class="task-name">${t.name}</div>
+          <div class="task-meta">${(t.startTime||t.endTime) ? '作業OK: '+(t.startTime||'')+(t.startTime&&t.endTime?'〜':'')+(t.endTime||'') : ''}</div>
+          ${t.qualityCriteria ? `<div class="task-meta">基準: ${t.qualityCriteria}</div>` : ''}
+        </div>
+        <div style="text-align:right">
+          <div class="task-pay">¥${t.pay}</div>
+          <div class="task-pay-sub">¥${t.payPer15}/15分 · ${t.duration}分</div>
+          <div style="margin-top:5px">${statusBadge}</div>
+        </div>
+      </div>
+      ${qualitySection}${actions}
+    </div>`;
+  }).join('');
+}
+
+function markTask(dk, taskId, status) {
+  const logs = getLogs();
+  if (!logs[dk]) logs[dk] = {};
+  if (status === 'pending') delete logs[dk][taskId];
+  else logs[dk][taskId] = { status, timestamp: new Date().toISOString() };
+  setLogs(logs);
+  showToast(status === 'done' ? '記録しました！' : status === 'missed' ? '記録しました' : '取り消しました');
+  renderToday();
+}
+
+function setQuality(dk, taskId, quality) {
+  const logs = getLogs();
+  if (logs[dk] && logs[dk][taskId]) { logs[dk][taskId].quality = quality; setLogs(logs); renderToday(); }
+}
+
+function renderWeek() {
+  const logs = getLogs();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dow = today.getDay();
+  const monday = new Date(today); monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
+  let totalDone=0, totalMissed=0, totalEarned=0, totalTasks=0;
+  let weekRows = [];
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    const dk = dateKey(d);
+    const tasks = getTasks().filter(t => t.days && t.days.includes(DAYS_FULL[d.getDay()]));
+    const dayLogs = logs[dk] || {};
+    tasks.forEach(t => {
+      totalTasks++;
+      const log = dayLogs[t.id] || {};
+      if (log.status === 'done') { totalDone++; totalEarned += t.pay; }
+      else if (log.status === 'missed') totalMissed++;
+    });
+    if (tasks.length) {
+      const doneCnt = tasks.filter(t => (dayLogs[t.id]||{}).status === 'done').length;
+      weekRows.push({ d, tasks, doneCnt, dayLogs });
+    }
+  }
+
+  const pending = totalTasks - totalDone - totalMissed;
+  document.getElementById('weekSummary').innerHTML = `
+    <div class="summary-box"><div class="summary-num">${totalDone}</div><div class="summary-label">完了</div></div>
+    <div class="summary-box"><div class="summary-num">¥${totalEarned}</div><div class="summary-label">今週の獲得</div></div>
+    <div class="summary-box"><div class="summary-num">${totalMissed}</div><div class="summary-label">未実施</div></div>
+    <div class="summary-box"><div class="summary-num">${pending}</div><div class="summary-label">未記録</div></div>`;
+
+  document.getElementById('weekList').innerHTML = weekRows.map(({ d, tasks, doneCnt, dayLogs }) => `
+    <div class="card">
+      <div class="card-title">${d.getMonth()+1}/${d.getDate()}（${DAYS[d.getDay()]}） <span class="badge">${doneCnt}/${tasks.length}</span></div>
+      ${tasks.map(t => {
+        const s = (dayLogs[t.id]||{}).status;
+        const badge = s==='done' ? '<span class="status-badge status-done">完了</span>'
+          : s==='missed' ? '<span class="status-badge status-miss">未実施</span>'
+          : '<span class="status-badge status-pending">－</span>';
+        return `<div class="pay-row">
+          <div class="pay-info"><div class="pay-name">${t.name}</div></div>
+          ${badge}
+          <div class="pay-amount">${s==='done'?'¥'+t.pay:'¥0'}</div>
+        </div>`;
+      }).join('')}
+    </div>`).join('') || '<div class="empty">今週のタスクはありません</div>';
+}
+
+function getPrepayTotal() {
+  return getPayments()
+    .filter(p => p.type === 'prepaid_advance')
+    .reduce((s, p) => s + Number(p.amount), 0);
+}
+
+function getEarnedTotal() {
+  const logs = getLogs();
+  const tasks = getTasks();
+  let total = 0;
+  Object.values(logs).forEach(dayLogs => {
+    Object.entries(dayLogs).forEach(([taskId, log]) => {
+      if (log.status === 'done') {
+        const task = tasks.find(t => t.id === taskId);
+        if (task) total += task.pay;
+      }
+    });
+  });
+  return total;
+}
+
+function renderPayment() {
+  const logs = getLogs();
+  const tasks = getTasks();
+  const payments = getPayments();
+  const name = getName();
+
+  // --- Balance calc ---
+  const prepayTotal = getPrepayTotal();
+  const earnedTotal = getEarnedTotal();
+  const balance = earnedTotal - prepayTotal; // negative = still owes work, positive = earned more than prepaid
+
+  let balanceClass, balanceMsg;
+  if (prepayTotal === 0) {
+    balanceClass = 'zero';
+    balanceMsg = '先払いの記録はありません';
+  } else if (balance < 0) {
+    balanceClass = 'positive';
+    balanceMsg = `先払い ¥${prepayTotal} − 労働済み ¥${earnedTotal}
+あと ¥${Math.abs(balance)} 分働くと精算完了`;
+  } else if (balance === 0) {
+    balanceClass = 'zero';
+    balanceMsg = `先払い ¥${prepayTotal} ちょうど精算済み！`;
+  } else {
+    balanceClass = 'negative';
+    balanceMsg = `先払い ¥${prepayTotal} − 労働済み ¥${earnedTotal}
+¥${balance} 分の追加支払いがあります`;
+  }
+
+  let html = '';
+
+  // Balance card
+  html += `<div class="balance-card ${balanceClass}">
+    <div class="balance-title">先払い残高</div>
+    <div class="balance-num ${balanceClass}">${balance < 0 ? '−¥'+Math.abs(balance) : balance === 0 && prepayTotal === 0 ? '−' : '+¥'+balance}</div>
+    <div class="balance-sub">${balanceMsg}</div>
+  </div>`;
+
+  // Prepay input card
+  html += `<div class="card">
+    <div class="card-title">先払いを記録する</div>
+    <div class="prepay-form">
+      <input class="form-input" id="prepayAmount" type="number" placeholder="金額（円）">
+      <button class="btn btn-primary" onclick="addPrepay()">記録</button>
+    </div>
+    <div style="font-size:11px;color:var(--brown-light);margin-top:8px">先払いしてもらった金額を入力してください</div>
+  </div>`;
+
+  // Unpaid done tasks
+  let unpaid = [];
+  Object.entries(logs).forEach(([dk, dayLogs]) => {
+    Object.entries(dayLogs).forEach(([taskId, log]) => {
+      if (log.status !== 'done') return;
+      const task = tasks.find(t => t.id === taskId);
+      if (!task) return;
+      if (payments.some(p => p.taskId === taskId && p.dk === dk && p.type === 'paid')) return;
+      unpaid.push({ dk, taskId, task });
+    });
+  });
+
+  if (unpaid.length) {
+    html += `<div class="card"><div class="card-title">後払い未支払い <span class="badge">${unpaid.length}件</span></div>`;
+    html += unpaid.map(({ dk, taskId, task }) => {
+      const d = new Date(dk + 'T00:00:00');
+      return `<div class="pay-row">
+        <div class="pay-info">
+          <div class="pay-name">${task.name}</div>
+          <div class="pay-detail">${d.getMonth()+1}/${d.getDate()}</div>
+        </div>
+        <div class="pay-amount">¥${task.pay}</div>
+        <div class="pay-actions">
+          <button class="btn btn-primary" onclick="payTask('${dk}','${taskId}','paid')">支払い済みにする</button>
+        </div>
+      </div>`;
+    }).join('');
+    html += '</div>';
+  }
+
+  // History
+  const history = payments.slice().reverse();
+  if (history.length) {
+    html += '<div class="card"><div class="card-title">履歴</div>';
+    html += history.slice(0, 30).map(p => {
+      const d = new Date(p.paidAt);
+      const dateStr = `${d.getMonth()+1}/${d.getDate()}`;
+      if (p.type === 'prepaid_advance') {
+        return `<div class="pay-row">
+          <div class="pay-info"><div class="pay-name">先払い受取</div><div class="pay-detail">${dateStr}</div></div>
+          <span class="status-badge status-prepaid">先払い</span>
+          <div class="pay-amount">¥${p.amount}</div>
+        </div>`;
+      }
+      const task = tasks.find(t => t.id === p.taskId);
+      return `<div class="pay-row">
+        <div class="pay-info">
+          <div class="pay-name">${task ? task.name : '（削除済み）'}</div>
+          <div class="pay-detail">${dateStr}</div>
+        </div>
+        <span class="status-badge status-paid">支払済</span>
+        <div class="pay-amount">¥${p.amount}</div>
+      </div>`;
+    }).join('');
+    html += '</div>';
+  }
+
+  document.getElementById('paymentContent').innerHTML = html;
+}
+
+function addPrepay() {
+  const amt = Number(document.getElementById('prepayAmount').value);
+  if (!amt || amt <= 0) { showToast('金額を入力してください'); return; }
+  const payments = getPayments();
+  payments.push({ type: 'prepaid_advance', amount: amt, paidAt: new Date().toISOString() });
+  setPayments(payments);
+  document.getElementById('prepayAmount').value = '';
+  showToast(`¥${amt} の先払いを記録しました`);
+  renderPayment();
+}
+
+function payTask(dk, taskId, type) {
+  const task = getTasks().find(t => t.id === taskId);
+  if (!task) return;
+  const payments = getPayments();
+  payments.push({ dk, taskId, amount: task.pay, type: 'paid', paidAt: new Date().toISOString() });
+  setPayments(payments);
+  showToast('支払いを記録しました');
+  renderPayment();
+}
+
+function renderReport() {
+  const logs = getLogs();
+  const tasks = getTasks();
+  const payments = getPayments();
+  const name = getName();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dow = today.getDay();
+  const monday = new Date(today); monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
+  const sun = new Date(monday); sun.setDate(monday.getDate() + 6);
+
+  let totalDone=0, totalMissed=0, totalEarned=0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    const dk = dateKey(d);
+    const dayTasks = tasks.filter(t => t.days && t.days.includes(DAYS_FULL[d.getDay()]));
+    const dayLogs = logs[dk] || {};
+    dayTasks.forEach(t => {
+      const log = dayLogs[t.id] || {};
+      if (log.status === 'done') { totalDone++; totalEarned += t.pay; }
+      else if (log.status === 'missed') totalMissed++;
+    });
+  }
+  const totalPaid = payments.filter(p => {
+    const d = new Date(p.paidAt);
+    return d >= monday && d < new Date(sun.getTime() + 86400000);
+  }).reduce((s, p) => s + Number(p.amount), 0);
+
+  const prepayTotal = getPrepayTotal();
+  const earnedAllTime = getEarnedTotal();
+  const prepayBalance = earnedAllTime - prepayTotal;
+
+  const lines = [
+    '【Yay Job 週次レポート】',
+    `${monday.getMonth()+1}/${monday.getDate()}〜${sun.getMonth()+1}/${sun.getDate()}`,
+    '',
+    `担当: ${name}`,
+    `完了: ${totalDone}件 / 未実施: ${totalMissed}件`,
+    `今週の獲得: ¥${totalEarned}`,
+    '',
+    '【先払い残高】',
+    `先払い合計: ¥${prepayTotal}`,
+    `労働済み合計: ¥${earnedAllTime}`,
+    prepayBalance < 0
+      ? `残り: −¥${Math.abs(prepayBalance)}（あと ¥${Math.abs(prepayBalance)} 分働くと精算）`
+      : prepayBalance === 0 && prepayTotal > 0
+      ? '精算済み！'
+      : prepayTotal > 0 ? `追加支払い: +¥${prepayBalance}` : '先払いなし',
+    '',
+    'Yay Job より',
+  ];
+  document.getElementById('reportText').textContent = lines.join('\n');
+}
+
+function copyReport() {
+  navigator.clipboard.writeText(document.getElementById('reportText').textContent).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'コピーしました！';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'LINEにコピー'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function renderSettings() {
+  const tasks = getTasks();
+  const el = document.getElementById('adminTaskList');
+  if (!tasks.length) { el.innerHTML = '<div class="empty">タスクがまだありません</div>'; return; }
+  el.innerHTML = tasks.map(t => `
+    <div class="admin-task-row">
+      <div class="admin-task-info">
+        <div class="admin-task-name">${t.name}</div>
+        <div class="admin-task-meta">¥${t.pay}（¥${t.payPer15}/15分 × ${t.duration}分） · ${(t.days||[]).map(d=>DAYS[DAYS_FULL.indexOf(d)]).join('')}${t.startTime?' 作業OK:'+t.startTime+(t.endTime?'〜'+t.endTime:''):''}</div>
+      </div>
+      <button class="btn btn-danger" onclick="deleteTask('${t.id}')">削除</button>
+    </div>`).join('');
+}
+
+function addTask() {
+  const name = document.getElementById('taskName').value.trim();
+  const payPer15 = document.getElementById('taskPay').value;
+  const duration = document.getElementById('taskDuration').value;
+  const startTime = document.getElementById('taskStart').value;
+  const endTime = document.getElementById('taskEnd').value;
+  const quality = document.getElementById('taskQuality').value.trim();
+  const days = Array.from(document.querySelectorAll('.day-check.selected')).map(b => b.dataset.day);
+  if (!name || !payPer15 || !duration || !days.length) {
+    showToast('タスク名・対価・所要時間・曜日を入力してください'); return;
+  }
+  const tasks = getTasks();
+  tasks.push({ id: Date.now().toString(), name, payPer15: Number(payPer15), duration: Number(duration), pay: calcTotalPay(payPer15, duration), startTime, endTime, qualityCriteria: quality, days });
+  setTasks(tasks);
+  ['taskName','taskPay','taskDuration','taskStart','taskEnd','taskQuality'].forEach(id => document.getElementById(id).value = '');
+  document.querySelectorAll('.day-check.selected').forEach(b => b.classList.remove('selected'));
+  showToast('タスクを追加しました！');
+  renderSettings();
+  renderToday();
+}
+
+function deleteTask(id) {
+  if (!confirm('このタスクを削除しますか？')) return;
+  setTasks(getTasks().filter(t => t.id !== id));
+  showToast('削除しました');
+  renderSettings();
+  renderToday();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+  });
+}
+</script>
+</body>
+</html>
