@@ -45,20 +45,6 @@ body { font-family: 'Hiragino Maru Gothic ProN', 'Hiragino Maru Gothic Pro', 'BI
   font-size: 13px; font-weight: 700; cursor: pointer; border: none; font-family: inherit;
 }
 
-/* NAME SETUP OVERLAY */
-.overlay {
-  position: fixed; inset: 0;
-  background: rgba(158,96,32,0.35);
-  z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px;
-}
-.overlay-card {
-  background: var(--white); border-radius: var(--radius);
-  padding: 32px 24px; width: 100%; max-width: 360px;
-  box-shadow: 0 8px 32px var(--shadow);
-}
-.overlay-title { margin-bottom: 6px; }
-.overlay-sub { font-size: 13px; color: var(--brown-light); text-align: center; margin-bottom: 24px; }
-
 /* NAV */
 .nav-tabs {
   display: flex; background: var(--cream);
@@ -194,18 +180,6 @@ body { font-family: 'Hiragino Maru Gothic ProN', 'Hiragino Maru Gothic Pro', 'BI
 </head>
 <body>
 
-<!-- NAME SETUP OVERLAY -->
-<div class="overlay" id="nameOverlay">
-  <div class="overlay-card">
-    <div class="overlay-title" style="display:flex;flex-direction:column;align-items:center;gap:8px;font-size:36px;"><img src="icon-192.png" style="height:52px;width:52px;border-radius:12px;display:block;" alt="Yay Job"><span style="font-family:Georgia,serif;font-style:italic;font-weight:700;color:#6B3F10;letter-spacing:1.5px;">Yay Job</span></div>
-    <div class="overlay-sub">名前を入力してください（任意）</div>
-    <div class="form-group">
-      <input class="form-input" id="nameInput" placeholder="名前" maxlength="20" style="font-size:16px;padding:12px;">
-    </div>
-    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px" onclick="saveName()">保存</button>
-  </div>
-</div>
-
 <!-- HEADER -->
 <div class="header">
   <div>
@@ -268,10 +242,11 @@ body { font-family: 'Hiragino Maru Gothic ProN', 'Hiragino Maru Gothic Pro', 'BI
   <div class="section" id="section-settings">
     <div class="card">
       <div class="card-title">プロフィール</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-size:14px;font-weight:700;color:var(--brown-dark)" id="settingsNameDisplay"></span>
-        <button class="btn btn-primary" onclick="showNameOverlay()">名前を変更</button>
+      <div class="form-group">
+        <label class="form-label">あなたの名前（任意）</label>
+        <input class="form-input" id="settingsNameInput" placeholder="名前" maxlength="20">
       </div>
+      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px" onclick="saveNameFromSettings()">名前を保存</button>
     </div>
     <div class="card">
       <div class="card-title">タスクを追加</div>
@@ -335,8 +310,6 @@ function getPayments() { return gs('payments', []); }
 function setPayments(p) { ss('payments', p); }
 function getName() { return gs('name', ''); }
 function setName(n) { ss('name', n); }
-function isSetupDone() { return gs('setupDone', false); }
-function markSetupDone() { ss('setupDone', true); }
 
 function dateKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -346,10 +319,6 @@ function calcTotalPay(per15, min) { return Math.round(Number(per15) * Number(min
 // INIT
 window.onload = () => {
   startApp(getName());
-  // First launch only: show name entry once
-  if (!isSetupDone()) {
-    document.getElementById('nameOverlay').style.display = 'flex';
-  }
   // build day checks
   const dc = document.getElementById('dayChecks');
   DAYS.forEach((d, i) => {
@@ -361,26 +330,15 @@ window.onload = () => {
   });
 };
 
-function saveName() {
-  const n = document.getElementById('nameInput').value.trim();
+function saveNameFromSettings() {
+  const n = document.getElementById('settingsNameInput').value.trim();
   setName(n);
-  markSetupDone();
-  document.getElementById('nameOverlay').style.display = 'none';
-  const nd = document.getElementById('settingsNameDisplay');
-  if (nd) nd.textContent = n || '（未設定）';
-}
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('nameOverlay').style.display !== 'none') saveName();
-});
-
-function showNameOverlay() {
-  document.getElementById('nameInput').value = getName();
-  document.getElementById('nameOverlay').style.display = 'flex';
+  showToast('名前を保存しました');
 }
 
 function startApp(name) {
-  const nd = document.getElementById('settingsNameDisplay');
-  if (nd) nd.textContent = name || '（未設定）';
+  const inp = document.getElementById('settingsNameInput');
+  if (inp) inp.value = name || '';
   document.getElementById('navTabs').style.display = 'flex';
   document.getElementById('mainContent').style.display = 'block';
   renderToday();

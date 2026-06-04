@@ -1,6 +1,6 @@
 // Network-first strategy: always try the network, fall back to cache only when offline.
 // This means uploading new files to GitHub updates the app automatically.
-const CACHE_NAME = 'yayjob-v5';
+const CACHE_NAME = 'yayjob-v6';
 const ASSETS = [
   './',
   './index.html',
