@@ -1,4 +1,6 @@
-const CACHE_NAME = 'yayjob-v3';
+// Network-first strategy: always try the network, fall back to cache only when offline.
+// This means uploading new files to GitHub updates the app automatically.
+const CACHE_NAME = 'yayjob-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -14,6 +16,10 @@ self.addEventListener('install', e => {
   );
 });
 
+self.addEventListener('message', e => {
+  if (e.data === 'skipWaiting') self.skipWaiting();
+});
+
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -23,14 +29,17 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).then(resp => {
-      return caches.open(CACHE_NAME).then(cache => {
-        if (e.request.method === 'GET' && resp.status === 200 && e.request.url.startsWith(self.location.origin)) {
-          cache.put(e.request, resp.clone());
+    fetch(e.request)
+      .then(resp => {
+        // Update cache with the fresh copy
+        if (resp && resp.status === 200 && e.request.url.startsWith(self.location.origin)) {
+          const copy = resp.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, copy));
         }
         return resp;
-      });
-    }).catch(() => cached))
+      })
+      .catch(() => caches.match(e.request)) // offline: serve cached version
   );
 });
