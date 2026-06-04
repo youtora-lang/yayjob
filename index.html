@@ -335,6 +335,8 @@ function getPayments() { return gs('payments', []); }
 function setPayments(p) { ss('payments', p); }
 function getName() { return gs('name', ''); }
 function setName(n) { ss('name', n); }
+function isSetupDone() { return gs('setupDone', false); }
+function markSetupDone() { ss('setupDone', true); }
 
 function dateKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -344,6 +346,10 @@ function calcTotalPay(per15, min) { return Math.round(Number(per15) * Number(min
 // INIT
 window.onload = () => {
   startApp(getName());
+  // First launch only: show name entry once
+  if (!isSetupDone()) {
+    document.getElementById('nameOverlay').style.display = 'flex';
+  }
   // build day checks
   const dc = document.getElementById('dayChecks');
   DAYS.forEach((d, i) => {
@@ -358,6 +364,7 @@ window.onload = () => {
 function saveName() {
   const n = document.getElementById('nameInput').value.trim();
   setName(n);
+  markSetupDone();
   document.getElementById('nameOverlay').style.display = 'none';
   const nd = document.getElementById('settingsNameDisplay');
   if (nd) nd.textContent = n || '（未設定）';
