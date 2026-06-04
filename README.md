@@ -12,15 +12,16 @@
 ## ファイル構成
 
 ```
-yayjob-app/
+（すべてリポジトリのルート直下に置く）
 ├── index.html          メインアプリ
 ├── manifest.json       PWA 設定（アプリ名・アイコン・色）
 ├── sw.js               オフライン対応（Service Worker）
-└── icons/
-    ├── icon-192.png        Android 用アイコン
-    ├── icon-512.png        高解像度・スプラッシュ用
-    └── apple-touch-icon.png iPhone 用アイコン
+├── icon-192.png        Android 用アイコン
+├── icon-512.png        高解像度・スプラッシュ用
+└── apple-touch-icon.png iPhone 用アイコン
 ```
+
+**重要：** 6つのファイルはすべてフォルダを作らず、リポジトリのルート直下に置いてください。
 
 ## ホーム画面に追加する方法
 
