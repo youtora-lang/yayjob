@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yayjob-v2';
+const CACHE_NAME = 'yayjob-v3';
 const ASSETS = [
   './',
   './index.html',

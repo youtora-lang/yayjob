@@ -198,11 +198,11 @@ body { font-family: 'Hiragino Maru Gothic ProN', 'Hiragino Maru Gothic Pro', 'BI
 <div class="overlay" id="nameOverlay">
   <div class="overlay-card">
     <div class="overlay-title" style="display:flex;flex-direction:column;align-items:center;gap:8px;font-size:36px;"><img src="icon-192.png" style="height:52px;width:52px;border-radius:12px;display:block;" alt="Yay Job"><span style="font-family:Georgia,serif;font-style:italic;font-weight:700;color:#6B3F10;letter-spacing:1.5px;">Yay Job</span></div>
-    <div class="overlay-sub">あなたの名前を入力してください</div>
+    <div class="overlay-sub">名前を入力してください（任意）</div>
     <div class="form-group">
       <input class="form-input" id="nameInput" placeholder="名前" maxlength="20" style="font-size:16px;padding:12px;">
     </div>
-    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px" onclick="saveName()">はじめる</button>
+    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px" onclick="saveName()">保存</button>
   </div>
 </div>
 
@@ -253,9 +253,14 @@ body { font-family: 'Hiragino Maru Gothic ProN', 'Hiragino Maru Gothic Pro', 'BI
   <!-- REPORT -->
   <div class="section" id="section-report">
     <div class="card">
-      <div class="card-title">週次レポート</div>
+      <div class="card-title">今週のレポート</div>
       <div class="report-box" id="reportText"></div>
       <button class="copy-btn" onclick="copyReport()" id="copyBtn">LINEにコピー</button>
+      <button class="copy-btn" onclick="saveReportToHistory()" id="saveReportBtn" style="background:var(--cream);color:var(--brown-dark);margin-top:8px;">この週を履歴に保存</button>
+    </div>
+    <div class="card">
+      <div class="card-title">レポート履歴</div>
+      <div id="reportHistoryList"></div>
     </div>
   </div>
 
@@ -338,12 +343,7 @@ function calcTotalPay(per15, min) { return Math.round(Number(per15) * Number(min
 
 // INIT
 window.onload = () => {
-  const name = getName();
-  if (!name) {
-    document.getElementById('nameOverlay').style.display = 'flex';
-  } else {
-    startApp(name);
-  }
+  startApp(getName());
   // build day checks
   const dc = document.getElementById('dayChecks');
   DAYS.forEach((d, i) => {
@@ -357,12 +357,10 @@ window.onload = () => {
 
 function saveName() {
   const n = document.getElementById('nameInput').value.trim();
-  if (!n) { showToast('名前を入力してください'); return; }
   setName(n);
   document.getElementById('nameOverlay').style.display = 'none';
-  startApp(n);
   const nd = document.getElementById('settingsNameDisplay');
-  if (nd) nd.textContent = n;
+  if (nd) nd.textContent = n || '（未設定）';
 }
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('nameOverlay').style.display !== 'none') saveName();
@@ -375,7 +373,7 @@ function showNameOverlay() {
 
 function startApp(name) {
   const nd = document.getElementById('settingsNameDisplay');
-  if (nd) nd.textContent = name;
+  if (nd) nd.textContent = name || '（未設定）';
   document.getElementById('navTabs').style.display = 'flex';
   document.getElementById('mainContent').style.display = 'block';
   renderToday();
@@ -674,14 +672,18 @@ function payTask(dk, taskId, type) {
   renderPayment();
 }
 
-function renderReport() {
+function getReports() { return gs('reports', []); }
+function setReports(r) { ss('reports', r); }
+
+// Build report text for the week containing the given reference date
+function buildReportText(refDate) {
   const logs = getLogs();
   const tasks = getTasks();
   const payments = getPayments();
   const name = getName();
-  const today = new Date(); today.setHours(0,0,0,0);
-  const dow = today.getDay();
-  const monday = new Date(today); monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
+  const dow = refDate.getDay();
+  const monday = new Date(refDate); monday.setDate(refDate.getDate() - (dow === 0 ? 6 : dow - 1));
+  monday.setHours(0,0,0,0);
   const sun = new Date(monday); sun.setDate(monday.getDate() + 6);
 
   let totalDone=0, totalMissed=0, totalEarned=0;
@@ -696,10 +698,6 @@ function renderReport() {
       else if (log.status === 'missed') totalMissed++;
     });
   }
-  const totalPaid = payments.filter(p => {
-    const d = new Date(p.paidAt);
-    return d >= monday && d < new Date(sun.getTime() + 86400000);
-  }).reduce((s, p) => s + Number(p.amount), 0);
 
   const prepayTotal = getPrepayTotal();
   const earnedAllTime = getEarnedTotal();
@@ -709,7 +707,7 @@ function renderReport() {
     '【Yay Job 週次レポート】',
     `${monday.getMonth()+1}/${monday.getDate()}〜${sun.getMonth()+1}/${sun.getDate()}`,
     '',
-    `担当: ${name}`,
+    `担当: ${name || '（未設定）'}`,
     `完了: ${totalDone}件 / 未実施: ${totalMissed}件`,
     `今週の獲得: ¥${totalEarned}`,
     '',
@@ -724,7 +722,63 @@ function renderReport() {
     '',
     'Yay Job より',
   ];
-  document.getElementById('reportText').textContent = lines.join('\n');
+  return {
+    text: lines.join('\n'),
+    weekKey: dateKey(monday),
+    label: `${monday.getMonth()+1}/${monday.getDate()}〜${sun.getMonth()+1}/${sun.getDate()}`
+  };
+}
+
+function renderReport() {
+  const r = buildReportText(new Date());
+  document.getElementById('reportText').textContent = r.text;
+  renderReportHistory();
+}
+
+function saveReportToHistory() {
+  const r = buildReportText(new Date());
+  const reports = getReports();
+  // overwrite if same week already saved
+  const idx = reports.findIndex(x => x.weekKey === r.weekKey);
+  const entry = { weekKey: r.weekKey, label: r.label, text: r.text, savedAt: new Date().toISOString() };
+  if (idx >= 0) reports[idx] = entry;
+  else reports.push(entry);
+  setReports(reports);
+  showToast('履歴に保存しました');
+  renderReportHistory();
+}
+
+function renderReportHistory() {
+  const reports = getReports().slice().sort((a, b) => b.weekKey.localeCompare(a.weekKey));
+  const el = document.getElementById('reportHistoryList');
+  if (!reports.length) {
+    el.innerHTML = '<div class="empty">保存された履歴はありません</div>';
+    return;
+  }
+  el.innerHTML = reports.map(r => `
+    <div class="pay-row">
+      <div class="pay-info">
+        <div class="pay-name">${r.label}</div>
+        <div class="pay-detail">保存: ${new Date(r.savedAt).getMonth()+1}/${new Date(r.savedAt).getDate()}</div>
+      </div>
+      <div class="pay-actions">
+        <button class="btn btn-primary" onclick="copyHistoryReport('${r.weekKey}')">コピー</button>
+        <button class="btn btn-danger" onclick="deleteHistoryReport('${r.weekKey}')">削除</button>
+      </div>
+    </div>`).join('');
+}
+
+function copyHistoryReport(weekKey) {
+  const r = getReports().find(x => x.weekKey === weekKey);
+  if (!r) return;
+  navigator.clipboard.writeText(r.text).then(() => showToast('コピーしました！'));
+}
+
+function deleteHistoryReport(weekKey) {
+  if (!confirm('この履歴を削除しますか？')) return;
+  setReports(getReports().filter(x => x.weekKey !== weekKey));
+  showToast('削除しました');
+  renderReportHistory();
 }
 
 function copyReport() {
