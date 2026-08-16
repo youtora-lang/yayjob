@@ -289,11 +289,19 @@ body { font-family: 'Hiragino Maru Gothic ProN', 'Hiragino Maru Gothic Pro', 'BI
       <div class="card-title">登録済みタスク</div>
       <div id="adminTaskList"></div>
     </div>
+
+    <div class="card">
+      <div class="card-title">バックアップ</div>
+      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;margin-bottom:9px" onclick="exportBackup()">書き出す（JSON）</button>
+      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px" onclick="document.getElementById('backupImportInput').click()">読み込む</button>
+      <div style="font-size:11px;color:var(--brown-light);margin-top:8px">この端末の中だけに保存されています。機種変更の前に書き出してください。読み込むと現在のデータが上書きされます。</div>
+    </div>
   </div>
 
 </div>
 
 <div class="toast" id="toast"></div>
+<input type="file" id="backupImportInput" accept="application/json" style="display:none" onchange="importBackup(event)">
 
 <script>
 const DAYS = ['日','月','火','水','木','金','土'];
@@ -803,6 +811,61 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function exportBackup() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('yayjob_')) data[key] = localStorage.getItem(key);
+  }
+  const payload = { backupVersion: 1, exportedAt: new Date().toISOString(), data };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const today = new Date();
+  const ymd = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `yayjob-backup-${ymd}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  showToast('バックアップを書き出しました');
+}
+
+function importBackup(event) {
+  const input = event.target;
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    input.value = '';
+    let payload;
+    try {
+      payload = JSON.parse(reader.result);
+    } catch {
+      showToast('ファイルの読み込みに失敗しました');
+      return;
+    }
+    if (!payload || typeof payload !== 'object' || payload.backupVersion !== 1 || !payload.data || typeof payload.data !== 'object') {
+      showToast('バックアップの形式が正しくありません');
+      return;
+    }
+    const keys = Object.keys(payload.data).filter(k => k.startsWith('yayjob_'));
+    if (!keys.length) {
+      showToast('バックアップデータが見つかりません');
+      return;
+    }
+    for (const k of keys) {
+      try { JSON.parse(payload.data[k]); }
+      catch { showToast('バックアップの内容が壊れています'); return; }
+    }
+    if (!confirm(`現在のデータを上書きして復元します（${keys.length}件）。よろしいですか？`)) return;
+    keys.forEach(k => localStorage.setItem(k, payload.data[k]));
+    location.reload();
+  };
+  reader.readAsText(file);
 }
 </script>
 
