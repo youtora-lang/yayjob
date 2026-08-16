@@ -1,6 +1,6 @@
 // Network-first strategy: always try the network, fall back to cache only when offline.
 // This means uploading new files to GitHub updates the app automatically.
-const CACHE_NAME = 'yayjob-v6';
+const CACHE_NAME = 'yayjob-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -12,12 +12,9 @@ const ASSETS = [
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
-});
-
-self.addEventListener('message', e => {
-  if (e.data === 'skipWaiting') self.skipWaiting();
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {

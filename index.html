@@ -812,25 +812,16 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').then(reg => {
       // Check for updates each time the app opens
       reg.update();
-      reg.addEventListener('updatefound', () => {
-        const nw = reg.installing;
-        if (nw) {
-          nw.addEventListener('statechange', () => {
-            if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-              nw.postMessage('skipWaiting');
-            }
-          });
-        }
-      });
     }).catch(err => console.log('SW registration failed:', err));
+  });
 
-    // Reload once the new service worker takes control
-    let refreshed = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshed) return;
-      refreshed = true;
-      window.location.reload();
-    });
+  // 新しいService Workerが制御を引き継いだら1回だけリロードする。
+  // sessionStorageでガードすることで、リロード後の再実行でも
+  // フラグが残り、無限リロードにならないようにする。
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (sessionStorage.getItem('yayjobSwReloaded')) return;
+    sessionStorage.setItem('yayjobSwReloaded', '1');
+    window.location.reload();
   });
 }
 </script>
