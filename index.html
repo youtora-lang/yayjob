@@ -120,6 +120,8 @@ main{padding:0 16px calc(100px + env(safe-area-inset-bottom))}
 .q-btn{flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.3;background:var(--white);border:2px solid var(--ink);border-radius:12px;font-weight:700;font-size:14px}
 .q-btn span{font-family:var(--font-num);font-weight:800;font-size:13px}
 .q-btn[aria-pressed="true"]{background:var(--butter)}
+.quality-now{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:15px}
+.quality-now span{font-family:var(--font-num);font-weight:800}
 .undo{align-self:flex-start;min-height:44px;padding:0 16px;background:transparent;border:2px solid var(--ink);border-radius:12px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
 .mini-list{display:flex;flex-direction:column;gap:8px}
 .mini{background:var(--muted);border:2px solid var(--ink);border-radius:16px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;opacity:.85}
@@ -233,7 +235,7 @@ main{padding:0 16px calc(100px + env(safe-area-inset-bottom))}
 /* ================================================================== */
 /* 定数                                                                 */
 /* ================================================================== */
-const APP_VERSION = 'v8';
+const APP_VERSION = 'v9';
 const SCHEMA = 2;
 const LS_PREFIX = 'yayjob_';
 // 新しいデータの保存先（旧キーとは別。旧キーは読み書きしない）
@@ -368,6 +370,12 @@ function ensureSchema(){
     else Object.keys(def).forEach(k => { if (cur[k] === undefined) cur[k] = def[k]; });
   });
   s.tasks.forEach(t => { if (t.active === undefined) t.active = true; });
+  // 使い始めた日。これより前の日は記録できない（v8 の端末は移行時の控えの日付）
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s.startDate || '')){
+    const snap = gs(SNAPSHOT_KEY, null);
+    const at = snap && snap.savedAt ? new Date(snap.savedAt) : null;
+    s.startDate = at && !isNaN(at) ? toKey(at) : todayKey();
+  }
   s.version = SCHEMA;
   setSettings(s);
 
@@ -424,6 +432,12 @@ function doneInGroup(logs, dk, group){
   return null;
 }
 function allowedOnDay(task, dk){ return !Array.isArray(task.weekdays) || task.weekdays.includes(dowOf(dk)); }
+function startDate(){ return getSettings().startDate || todayKey(); }
+/* 記録を変えられるのは今日と前日だけ。使い始めた日より前は変えられない */
+function canEdit(dk){
+  const tk = todayKey();
+  return (dk === tk || dk === addDays(tk, -1)) && dk >= startDate();
+}
 
 function totals(){
   const logs = getLogs();
@@ -441,12 +455,12 @@ function weekStats(monKey, throughKey){
   const keys = weekKeys(monKey).filter(k => !throughKey || k <= throughKey);
   const tasks = getSettings().tasks;
   const byTask = {};
-  let count = 0, minutes = 0, amount = 0, skips = 0;
+  let count = 0, minutes = 0, amount = 0, skips = 0; // skips は見送りがあった日数
   keys.forEach(k => {
     const day = logs[k] || {};
+    if (Object.values(day).some(e => e.status === 'skipped')) skips++;
     Object.keys(day).forEach(tid => {
       const e = day[tid];
-      if (e.status === 'skipped'){ skips++; return; }
       if (e.status !== 'done') return;
       const t = tasks.find(x => x.id === tid);
       const m = Number(e.minutes ?? (t ? t.minutes : 0)) || 0;
@@ -463,7 +477,7 @@ function weekStats(monKey, throughKey){
 /* ================================================================== */
 function markDone(dk, tid){
   const t = taskById(tid);
-  if (!t || dk > todayKey()) return;
+  if (!t || !canEdit(dk)) return;
   const logs = getLogs();
   if (!allowedOnDay(t, dk)) return;
   if (doneInGroup(logs, dk, t.dailyGroup)) return;
@@ -482,7 +496,7 @@ function markDone(dk, tid){
 }
 function markSkip(dk, tid){
   const t = taskById(tid);
-  if (!t || dk > todayKey() || !allowedOnDay(t, dk)) return;
+  if (!t || !canEdit(dk) || !allowedOnDay(t, dk)) return;
   const logs = getLogs();
   const cur = entryOf(logs, dk, tid);
   if (cur && cur.status === 'done') return;
@@ -493,6 +507,7 @@ function markSkip(dk, tid){
   renderToday();
 }
 function undoEntry(dk, tid, msg){
+  if (!canEdit(dk)) return;
   const logs = getLogs();
   if (logs[dk]){ delete logs[dk][tid]; if (!Object.keys(logs[dk]).length) delete logs[dk]; }
   setLogs(logs);
@@ -505,6 +520,7 @@ function confirmUndoDone(dk, tid){
   undoEntry(dk, tid);
 }
 function setQuality(dk, tid, q){
+  if (!canEdit(dk) || !QUALITY.some(x => x.key === q)) return;
   const logs = getLogs();
   const e = entryOf(logs, dk, tid);
   if (!e || e.status !== 'done') return;
@@ -574,12 +590,17 @@ function renderToday(scrollTop){
   const tasks = activeTasks();
   const done = doneInGroup(logs, dk, COMMON_GROUP);
   const dayWord = isToday ? '今日' : 'この日';
+  const editable = canEdit(dk);
+  const lockMsg = editable ? '' : (dk < startDate()
+    ? 'この日はアプリを使い始める前の日です。'
+    : '記録できるのは今日と前日だけです。この日の記録は見るだけです。');
+  const subText = done ? `${dayWord}の家事はおしまいです` : (editable ? `${dayWord}の家事は1つまで` : 'この日の記録は見るだけです');
 
   const head = `
     <div class="titlebar">
       <div>
         <h1>${labelMDJ(dk)}</h1>
-        <div class="sub">${done ? `${dayWord}の家事はおしまいです` : `${dayWord}の家事は1つまで`}</div>
+        <div class="sub">${subText}</div>
       </div>
       <div class="navbtns">
         <button class="circle-btn" type="button" aria-label="前の日" onclick="changeDate(-1)">${I.chevL}</button>
@@ -591,6 +612,7 @@ function renderToday(scrollTop){
   let body;
   if (done){
     const { task, entry } = done;
+    const curQ = QUALITY.find(q => q.key === entry.quality) || QUALITY[0];
     const qBtns = QUALITY.map(q => `
       <button class="q-btn" type="button" aria-pressed="${entry.quality === q.key}" onclick="setQuality('${dk}','${task.id}','${q.key}')">
         ${q.mark} ${q.label}<span>${yen(calcAmount(entry.base, q.key, s.qualityRates))}</span>
@@ -598,6 +620,7 @@ function renderToday(scrollTop){
     const others = tasks.filter(t => t.dailyGroup === COMMON_GROUP && t.id !== task.id).map(t => `
       <div class="mini"><b>${esc(t.name)}${t.weekdaysLabel ? `（${esc(t.weekdaysLabel)}）` : ''}</b><span>今週 ${weekDoneCount(logs, t.id, dk)}/${t.maxPerWeek}回</span></div>`).join('');
     body = `
+      ${lockMsg ? `<div class="banner">${lockMsg}</div>` : ''}
       <div class="done-card">
         <div class="done-head">
           <div class="done-badge">${I.checkLg}</div>
@@ -607,19 +630,24 @@ function renderToday(scrollTop){
           </div>
           <div class="done-amt">${yen(entry.amount)}</div>
         </div>
+        ${editable ? `
         <div class="quality">
           <div class="quality-lb">できばえでお手当が決まります</div>
           <div class="quality-row">${qBtns}</div>
         </div>
-        <button class="undo" type="button" onclick="confirmUndoDone('${dk}','${task.id}')">${I.undo}取り消す</button>
+        <button class="undo" type="button" onclick="confirmUndoDone('${dk}','${task.id}')">${I.undo}取り消す</button>` : `
+        <div class="quality">
+          <div class="quality-lb">できばえ</div>
+          <div class="quality-now">${curQ.mark} ${curQ.label}<span>${yen(entry.amount)}</span></div>
+        </div>`}
       </div>
       <div class="section-title soft">ほかの家事は${dayWord}はおしまい</div>
       <div class="mini-list">${others}</div>`;
   } else {
-    const cards = tasks.map(t => choreCard(t, dk, logs)).join('');
+    const cards = tasks.map(t => choreCard(t, dk, logs, editable)).join('');
     const r = s.qualityRates;
     body = `
-      <div class="banner">${dayWord}は好きな家事を1つ選べます。やらない日があっても大丈夫です。</div>
+      <div class="banner">${lockMsg || `${dayWord}は好きな家事を1つ選べます。やらない日があっても大丈夫です。`}</div>
       <div class="stack">${cards}
         <div class="guide">
           お手当はできばえで変わります。
@@ -628,14 +656,14 @@ function renderToday(scrollTop){
             ${QUALITY.map(q => `<tr><th>${q.mark} ${q.label}</th><td>${yen(calcAmount(200, q.key, r))}</td><td>${yen(calcAmount(400, q.key, r))}</td></tr>`).join('')}
           </table>
         </div>
-        <div class="footnote">物が残っていて始められないときは「見送り」を押します。お手当には影響しません。<br>どの家事も、物がない状態から始めます。自分の物（ハナの物・ルオの寝室にあるハナのスペース）の片付けは、お手当のない基本の家事です。</div>
+        <div class="footnote">物が残っていて始められないときは「見送り」を押します。お手当には影響しません。<br>どの家事も、物がない状態から始めます。自分の物や、自分のスペースの片付けは、お手当のない基本の家事です。</div>
       </div>`;
   }
   document.getElementById('screen-today').innerHTML = head + body;
   if (scrollTop) window.scrollTo(0, 0);
 }
 
-function choreCard(t, dk, logs){
+function choreCard(t, dk, logs, editable){
   const n = weekDoneCount(logs, t.id, dk);
   const capped = n >= t.maxPerWeek;
   const allowed = allowedOnDay(t, dk);
@@ -645,7 +673,10 @@ function choreCard(t, dk, logs){
   const countNote = t.weekdaysLabel ? `今週 ${n}/${t.maxPerWeek}回（土日どちらか1日）` : `今週 ${n}/${t.maxPerWeek}回`;
 
   let foot;
-  if (capped){
+  if (!editable){
+    foot = capped ? `<div class="info mint">${I.check}今週はおしまい。来週また選べます。</div>`
+      : skipped ? `<div class="info skip">${I.pause}見送りにしました</div>` : '';
+  } else if (capped){
     foot = `<div class="info mint">${I.check}今週はおしまい。来週また選べます。</div>`;
   } else if (!allowed){
     foot = `
@@ -843,8 +874,8 @@ function buildReportText(monKey){
     ...(lines.length ? lines : ['（記録なし）']),
     `見送り ${st.skips}回`,
     '',
-    `もらえる分 ${yen(t.get)}`,
-    `返す分 ${yen(t.owe)}`
+    `いまのもらえる分 ${yen(t.get)}`,
+    `いまの返す分 ${yen(t.owe)}`
   ].join('\n');
 }
 
@@ -976,7 +1007,7 @@ function renderSettings(){
       <p class="small">記録はこの端末の中だけに保存されています。機種変更の前や、ときどき書き出して保存してください。</p>
     </div>
     ${legacy}
-    <p class="small" style="text-align:center;margin-top:18px">Yay Job ${APP_VERSION}</p>`;
+    <p class="small" style="text-align:center;margin-top:18px">使い始めた日：${labelMJ(startDate())}<br>Yay Job ${APP_VERSION}</p>`;
 }
 function saveRates(){
   const s = getSettings();

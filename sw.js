@@ -1,7 +1,7 @@
 // Network-first strategy: always try the network, fall back to cache only when offline.
 // This means uploading new files to GitHub updates the app automatically.
 // index.html / sw.js / manifest.json を変えたら CACHE_NAME を1つ上げる。
-const CACHE_NAME = 'yayjob-v8';
+const CACHE_NAME = 'yayjob-v9';
 const ASSETS = [
   './',
   './index.html',

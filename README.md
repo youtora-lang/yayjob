@@ -51,13 +51,17 @@
 - お風呂掃除は土日だけ（`weekdays: [6, 0]`）・週1回まで
 - お手当 = 基本額 × できばえの割合（◎100% / ○50% / △25%、設定で変更可）。
   記録した時点の金額を記録側（`amount`）に保存する
-- 「見送り」は完了にも未実施にも数えず、上限や1日1つの枠も使わない
+- 「見送り」は完了にも未実施にも数えず、上限や1日1つの枠も使わない。
+  週間・レポートでは見送りがあった日数で数える
+- 記録・見送り・取り消し・できばえの変更ができるのは今日と前日だけ（v9〜）。
+  使い始めた日（`startDate`）より前の日は前日でも変えられない。
+  `startDate` がなければ `premigration_v7.savedAt` の日付、それもなければ今日になる
 
 ### localStorage キー（すべて `yayjob_` で始まる）
 
 ```
 yayjob_schema        2
-yayjob_v2_settings   { version, qualityRates:{perfect,ok,partial}, tasks:[{id,name,short,abbr,minutes,baseAmount,maxPerWeek,dailyGroup,weekdays,weekdaysLabel,criteria,active}] }
+yayjob_v2_settings   { version, startDate, qualityRates:{perfect,ok,partial}, tasks:[{id,name,short,abbr,minutes,baseAmount,maxPerWeek,dailyGroup,weekdays,weekdaysLabel,criteria,active}] }
 yayjob_v2_logs       { "YYYY-MM-DD": { [taskId]: {status:'done', quality, base, minutes, amount, at} | {status:'skipped', at} } }
 yayjob_v2_payments   [{id, type:'received'|'advance', amount, date, note, createdAt}]
 yayjob_v2_reports    [{weekKey(月曜), label, text, savedAt}]
