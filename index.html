@@ -2,839 +2,1071 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Yay Job</title>
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#F5CC2F">
+<meta name="theme-color" content="#FFE14D">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Yay Job">
 <meta name="mobile-web-app-capable" content="yes">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Rubik:wght@600;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --cream: #F0DFA0;
-  --yellow: #F5CC2F;
-  --gold: #E8AA10;
-  --brown: #9E6020;
-  --brown-dark: #6B3F10;
-  --brown-light: #C8832A;
-  --bg: #FFFBF0;
-  --white: #FFFFFF;
-  --shadow: rgba(158,96,32,0.12);
-  --radius: 16px;
-  --radius-sm: 10px;
+:root{
+  --butter:#FFE14D;
+  --sky:#7CCBF2;
+  --sky-ink:#1A6FA0;
+  --sky-soft:#DDF1FC;
+  --mint-soft:#BFF0DD;
+  --mint:#22C79A;
+  --ink:#2A2118;
+  --ink-2:#4A3C2E;
+  --ink-3:#5A4A3A;
+  --paper:#FFFBEF;
+  --muted:#F1EBD8;
+  --line-soft:#D9CFB8;
+  --skip:#8A7A66;
+  --white:#FFFFFF;
+  --danger:#A3352A;
+  --font-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","BIZ UDPGothic",system-ui,sans-serif;
+  --font-body:"Zen Kaku Gothic New","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+  --font-num:"Rubik","SF Pro Rounded","Hiragino Sans",system-ui,sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Hiragino Maru Gothic ProN', 'Hiragino Maru Gothic Pro', 'BIZ UDPGothic', 'Meiryo', sans-serif; background: var(--bg); color: var(--brown); min-height: 100vh; font-size: 15px; }
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.6;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+button,input,select{font-family:inherit;color:inherit;font-size:inherit}
+button{cursor:pointer}
+button:disabled{cursor:default}
+:focus-visible{outline:3px solid var(--sky-ink);outline-offset:2px}
+svg{display:block;flex:none}
 
-.header {
-  background: var(--yellow);
-  padding: 14px 20px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 2px 8px var(--shadow);
-}
-.header-title { display: flex; align-items: center; gap: 10px; }
-.header-sub { font-size: 11px; color: var(--brown); font-weight: 500; }
-.name-pill {
-  background: var(--brown); color: var(--cream);
-  border-radius: 20px; padding: 6px 14px;
-  font-size: 13px; font-weight: 700; cursor: pointer; border: none; font-family: inherit;
-}
+#app{max-width:480px;margin:0 auto;min-height:100dvh;background:var(--paper)}
+.head{padding:calc(16px + env(safe-area-inset-top)) 20px 0;display:flex;align-items:center;gap:10px}
+.logo-mark{width:36px;height:36px;border-radius:12px;background:var(--butter);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center}
+.logo{font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:.01em}
 
-/* NAV */
-.nav-tabs {
-  display: flex; background: var(--cream);
-  border-bottom: 2px solid var(--gold);
-  overflow-x: auto; scrollbar-width: none;
-}
-.nav-tabs::-webkit-scrollbar { display: none; }
-.nav-tab {
-  flex: 1; min-width: 60px; padding: 11px 6px;
-  text-align: center; font-size: 12px; font-weight: 700;
-  color: var(--brown); opacity: 0.5; cursor: pointer;
-  border: none; background: none; font-family: inherit;
-  white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -2px;
-}
-.nav-tab.active { opacity: 1; border-bottom-color: var(--brown); }
+main{padding:0 16px calc(100px + env(safe-area-inset-bottom))}
+.screen{display:none}
+.screen.active{display:block}
 
-.main { padding: 16px; max-width: 600px; margin: 0 auto; }
-.section { display: none; }
-.section.active { display: block; }
+/* 画面の見出し */
+.titlebar{padding:18px 4px 0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.titlebar h1{font-family:var(--font-display);font-weight:900;font-size:28px;line-height:1.25}
+.titlebar h1.sm{font-size:26px}
+.titlebar .sub{font-size:13px;font-weight:500;color:var(--ink-3);margin-top:2px}
+.navbtns{display:flex;gap:8px;flex:none}
+.circle-btn{width:44px;height:44px;border-radius:50%;background:var(--white);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+.circle-btn:disabled{background:var(--muted);opacity:.45}
+.back-today{margin-top:8px;min-height:44px;padding:0 14px;border:2px solid var(--ink);border-radius:999px;background:var(--sky-soft);font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:6px}
 
-.card {
-  background: var(--white); border-radius: var(--radius);
-  padding: 18px; margin-bottom: 14px;
-  box-shadow: 0 2px 8px var(--shadow); border: 1.5px solid var(--cream);
-}
-.card-title {
-  font-size: 14px; font-weight: 800; color: var(--brown-dark);
-  margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
-}
-.badge { background: var(--yellow); color: var(--brown-dark); border-radius: 8px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+/* カード */
+.card{background:var(--white);border:2px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:14px 16px}
+.stack{display:flex;flex-direction:column;gap:14px;margin-top:16px}
+.banner{margin-top:16px;background:var(--butter);border:2px solid var(--ink);border-radius:20px;padding:14px 16px;font-size:14px;font-weight:700;line-height:1.6}
+.section-title{padding:22px 4px 8px;font-family:var(--font-display);font-weight:900;font-size:18px}
+.section-title.soft{font-weight:700;font-size:15px;color:var(--ink-2)}
 
-.task-item {
-  border: 1.5px solid var(--cream); border-radius: var(--radius-sm);
-  padding: 14px; margin-bottom: 10px; background: var(--bg); transition: all 0.15s;
-}
-.task-item.done { background: #f6ffe8; border-color: #b5d99c; }
-.task-item.missed { background: #fff4f4; border-color: #f0b0b0; opacity: 0.7; }
-.task-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.task-name { font-size: 15px; font-weight: 700; color: var(--brown-dark); }
-.task-meta { font-size: 11px; color: var(--brown-light); margin-top: 3px; }
-.task-pay { background: var(--gold); color: var(--white); border-radius: 8px; padding: 3px 10px; font-size: 13px; font-weight: 800; white-space: nowrap; }
-.task-pay-sub { font-size: 10px; color: var(--brown-light); text-align: right; margin-top: 2px; }
-.task-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+/* 家事カード */
+.chore{display:flex;flex-direction:column;gap:10px}
+.chore.off{background:var(--muted);box-shadow:none}
+.chore-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.chore-name{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.3}
+.chore.off .chore-name{color:var(--ink-2)}
+.tag{background:var(--sky);color:var(--ink);border-radius:999px;padding:2px 10px;font-family:var(--font-body);font-size:11px;font-weight:700;line-height:1.6}
+.pill{flex:none;background:var(--butter);border:2px solid var(--ink);border-radius:999px;padding:2px 10px;font-family:var(--font-num);font-weight:800;font-size:15px;white-space:nowrap}
+.pill small{font-family:var(--font-body);font-weight:700;font-size:11px;margin-left:4px}
+.chore.off .pill{background:var(--white);color:var(--ink-2)}
+.count{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--ink-3)}
+.dots{display:flex;gap:4px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--white);border:2px solid var(--ink)}
+.dot.on{background:var(--sky)}
+.dots.lg .dot{width:14px;height:14px}
+.criteria{font-size:13px;line-height:1.6;color:var(--ink-2)}
+.actions{display:flex;gap:10px}
+.btn{min-height:48px;border:2px solid var(--ink);border-radius:14px;font-weight:700;font-size:14px;background:var(--white);display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 14px}
+.btn:disabled{background:var(--muted);color:var(--ink-3);border-color:var(--line-soft)}
+.btn-do{flex:1.5;background:var(--sky);font-family:var(--font-display);font-weight:900;font-size:16px}
+.btn-skip{flex:1}
+.btn-ink{background:var(--ink);color:var(--white);font-family:var(--font-display);font-weight:900;font-size:15px}
+.btn-sky{background:var(--sky);font-family:var(--font-display);font-weight:900;font-size:15px}
+.btn-block{width:100%}
+.info{display:flex;align-items:center;gap:8px;border:2px solid var(--ink);border-radius:12px;padding:8px 12px;font-size:13px;font-weight:700;line-height:1.5}
+.info.mint{background:var(--mint-soft)}
+.info.plain{background:var(--paper)}
+.info.skip{background:var(--white);border-style:dashed;border-color:var(--skip);color:var(--ink-2)}
 
-.btn { border: none; border-radius: 8px; padding: 7px 14px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
-.btn-done { background: var(--yellow); color: var(--brown-dark); }
-.btn-done:hover { background: var(--gold); color: var(--white); }
-.btn-miss { background: var(--cream); color: var(--brown); }
-.btn-miss:hover { background: #f0b0b0; color: #a00; }
-.btn-primary { background: var(--gold); color: var(--white); }
-.btn-primary:hover { background: var(--brown); }
-.btn-danger { background: #fde8e8; color: #c00; }
-.btn-danger:hover { background: #f0b0b0; }
+.guide{background:var(--white);border:2px solid var(--ink);border-radius:16px;padding:12px 14px;font-size:13px;line-height:1.7;font-weight:700}
+.guide table{border-collapse:collapse;margin-top:6px;width:100%}
+.guide th,.guide td{text-align:left;padding:3px 0;font-weight:700}
+.guide td{font-family:var(--font-num);font-weight:800;text-align:right}
+.guide th:not(:first-child){text-align:right;font-size:12px;color:var(--ink-3)}
+.footnote{font-size:12px;line-height:1.7;font-weight:500;color:var(--ink-3);padding:0 4px}
 
-.quality-row { display: flex; gap: 6px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
-.quality-label { font-size: 11px; color: var(--brown); font-weight: 600; }
-.quality-btn { border: 1.5px solid var(--cream); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; background: var(--white); color: var(--brown); cursor: pointer; font-family: inherit; }
-.quality-btn.selected { background: var(--yellow); border-color: var(--gold); color: var(--brown-dark); }
+/* 完了カード */
+.done-card{margin-top:16px;background:var(--mint-soft);border:2px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:16px;display:flex;flex-direction:column;gap:12px}
+.done-head{display:flex;align-items:center;gap:10px}
+.done-badge{width:40px;height:40px;border-radius:50%;background:var(--mint);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;flex:none}
+.done-name{font-family:var(--font-display);font-weight:900;font-size:20px;line-height:1.3}
+.done-time{font-size:12px;font-weight:700;color:var(--ink-2)}
+.done-amt{margin-left:auto;font-family:var(--font-num);font-weight:800;font-size:26px}
+.quality{background:var(--white);border:2px solid var(--ink);border-radius:14px;padding:10px 12px}
+.quality-lb{font-size:12px;font-weight:700;margin-bottom:8px}
+.quality-row{display:flex;gap:8px}
+.q-btn{flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.3;background:var(--white);border:2px solid var(--ink);border-radius:12px;font-weight:700;font-size:14px}
+.q-btn span{font-family:var(--font-num);font-weight:800;font-size:13px}
+.q-btn[aria-pressed="true"]{background:var(--butter)}
+.undo{align-self:flex-start;min-height:44px;padding:0 16px;background:transparent;border:2px solid var(--ink);border-radius:12px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
+.mini-list{display:flex;flex-direction:column;gap:8px}
+.mini{background:var(--muted);border:2px solid var(--ink);border-radius:16px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;opacity:.85}
+.mini b{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink-2)}
+.mini span{font-size:12px;font-weight:700;color:var(--ink-3);white-space:nowrap}
 
-.status-badge { display: inline-block; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
-.status-done { background: #d4f0c0; color: #3a7a10; }
-.status-miss { background: #fde8e8; color: #c00; }
-.status-pending { background: var(--cream); color: var(--brown); }
-.status-paid { background: #cce8ff; color: #0055aa; }
-.status-prepaid { background: #e8d0ff; color: #5500aa; }
+/* 週間 */
+.stamps{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.st{display:flex;flex-direction:column;align-items:center;gap:6px}
+.st-dow{font-size:12px;font-weight:700;color:var(--ink-2)}
+.st-date{font-family:var(--font-num);font-weight:600;font-size:11px;color:var(--ink-3)}
+.st.today .st-dow,.st.today .st-date{color:var(--sky-ink);font-weight:900}
+.stamp{width:min(46px,11vw);height:min(46px,11vw);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:18px;background:var(--paper);border:2px solid var(--line-soft)}
+.stamp.done{background:var(--butter);border-color:var(--ink)}
+.stamp.skip{background:var(--white);border:2px dashed var(--skip)}
+.st.today .stamp{border:3px solid var(--sky)}
+.legend{display:flex;align-items:center;gap:6px;margin:12px 6px 0;font-size:11px;font-weight:500;color:var(--ink-3)}
+.earn{margin-top:18px;background:var(--butter);border:2px solid var(--ink);border-radius:20px;padding:16px 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.earn-lb{font-size:13px;font-weight:700}
+.earn-amt{font-family:var(--font-num);font-weight:800;font-size:clamp(40px,13vw,56px);line-height:1.05}
+.earn-sub{text-align:right;font-size:13px;font-weight:700;line-height:1.7;padding-bottom:6px;white-space:nowrap}
+.list{background:var(--white);border:2px solid var(--ink);border-radius:20px;padding:4px 16px}
+.li{display:flex;align-items:center;gap:12px;min-height:52px;border-bottom:2px solid var(--muted);padding:6px 0}
+.li:last-child{border-bottom:0}
+.abbr{width:30px;height:30px;border-radius:50%;background:var(--butter);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:14px;flex:none}
+.li-main{flex:1;min-width:0;font-size:14px;font-weight:700}
+.li-main .sub{font-size:12px;font-weight:500;color:var(--ink-3)}
+.li-num{font-family:var(--font-num);font-weight:800;font-size:14px;text-align:right;white-space:nowrap}
+.note-box{margin-top:16px;background:var(--muted);border:2px solid var(--ink);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;line-height:1.5}
 
-.form-group { margin-bottom: 14px; }
-.form-label { font-size: 12px; font-weight: 700; color: var(--brown); margin-bottom: 5px; display: block; }
-.form-input, .form-select {
-  width: 100%; border: 1.5px solid var(--cream); border-radius: 8px;
-  padding: 9px 12px; font-family: inherit; font-size: 14px;
-  color: var(--brown-dark); background: var(--bg); outline: none;
-}
-.form-input:focus, .form-select:focus { border-color: var(--gold); }
-.form-row { display: flex; gap: 10px; }
-.form-row .form-group { flex: 1; }
-.day-check-group { display: flex; flex-wrap: wrap; gap: 6px; }
-.day-check { border: 1.5px solid var(--cream); border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 700; cursor: pointer; background: var(--bg); color: var(--brown); font-family: inherit; }
-.day-check.selected { background: var(--yellow); border-color: var(--gold); color: var(--brown-dark); }
+/* 支払い */
+.money{padding:16px 18px}
+.money.get{background:var(--butter)}
+.money.owe{background:var(--sky-soft)}
+.money-lb{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.money-amt{font-family:var(--font-num);font-weight:800;font-size:44px;line-height:1.15;margin-top:4px}
+.money-amt.zero{opacity:.4}
+.money-sub{font-size:12px;font-weight:500;color:var(--ink-2);margin-top:2px}
+.money .btn{margin-top:12px}
+.net{background:var(--white);border:2px solid var(--ink);border-radius:16px;padding:12px 16px}
+.net-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.net-row b{font-size:14px}
+.net-row span{font-family:var(--font-num);font-weight:800;font-size:24px}
+.net-calc{font-size:12px;font-weight:500;color:var(--ink-3);margin-top:2px}
+.yen-plus{font-family:var(--font-num);font-weight:800;font-size:16px;white-space:nowrap}
+.yen-minus{font-family:var(--font-num);font-weight:800;font-size:16px;color:var(--sky-ink);white-space:nowrap}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:2px solid var(--line-soft);background:var(--white);display:flex;align-items:center;justify-content:center;padding:0;flex:none}
+.empty{font-size:13px;color:var(--ink-3);padding:14px 0}
 
-.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-.summary-box { background: var(--cream); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
-.summary-num { font-size: 26px; font-weight: 800; color: var(--brown-dark); line-height: 1.1; }
-.summary-label { font-size: 11px; color: var(--brown); margin-top: 3px; font-weight: 600; }
+/* レポート */
+.preview{background:var(--paper);border:2px dashed var(--ink);border-radius:14px;padding:12px 13px;font-size:13px;line-height:1.85;white-space:pre-wrap;word-break:break-word}
+.btn-col{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 
-.report-box { background: var(--cream); border-radius: var(--radius-sm); padding: 16px; font-size: 13px; color: var(--brown-dark); white-space: pre-wrap; line-height: 1.7; word-break: break-all; }
-.copy-btn { width: 100%; padding: 13px; border-radius: var(--radius-sm); border: none; background: var(--gold); color: var(--white); font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; transition: background 0.15s; }
-.copy-btn:hover { background: var(--brown); }
-.copy-btn.copied { background: #4caf50; }
+/* 設定 */
+.field{margin-bottom:12px}
+.field label{display:block;font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:5px}
+.field input{width:100%;min-height:44px;border:2px solid var(--ink);border-radius:12px;padding:8px 12px;background:var(--white);font-size:16px}
+.field input[type=number]{font-family:var(--font-num);font-weight:700}
+.rate-row{display:flex;align-items:center;gap:10px;min-height:52px;border-bottom:2px solid var(--muted)}
+.rate-row:last-of-type{border-bottom:0}
+.rate-row b{flex:1;font-size:14px}
+.rate-row input{width:76px;min-height:44px;border:2px solid var(--ink);border-radius:12px;padding:6px 10px;background:var(--paper);font-family:var(--font-num);font-weight:800;font-size:16px;text-align:right}
+.rate-row em{font-style:normal;font-size:12px;font-weight:700;color:var(--ink-3);width:84px;text-align:right}
+.small{font-size:12px;line-height:1.7;color:var(--ink-3);margin-top:10px}
 
-.pay-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--cream); gap: 8px; }
-.pay-row:last-child { border-bottom: none; }
-.pay-info { flex: 1; }
-.pay-name { font-size: 14px; font-weight: 700; color: var(--brown-dark); }
-.pay-detail { font-size: 11px; color: var(--brown-light); margin-top: 2px; }
-.pay-amount { font-size: 16px; font-weight: 800; color: var(--gold); white-space: nowrap; }
-.pay-actions { display: flex; gap: 6px; }
+/* 下部タブ */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--white);border-top:2px solid var(--ink)}
+.tabs-in{max-width:480px;margin:0 auto;display:flex;padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.tab{flex:1;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;border-radius:16px;background:none;font-size:11px;font-weight:700;color:var(--ink-2)}
+.tab[aria-current="page"]{background:var(--butter);color:var(--ink)}
 
-.empty { text-align: center; padding: 40px 20px; color: var(--brown-light); font-size: 14px; }
-
-.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--brown-dark); color: var(--cream); border-radius: 20px; padding: 10px 22px; font-size: 13px; font-weight: 700; z-index: 999; transition: transform 0.3s ease; pointer-events: none; white-space: nowrap; }
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-.date-bar { display: flex; align-items: center; justify-content: space-between; background: var(--cream); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 14px; }
-.date-text { font-size: 14px; font-weight: 700; color: var(--brown-dark); }
-.date-nav { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--brown); padding: 0 4px; }
-
-.admin-task-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--cream); gap: 8px; }
-.admin-task-row:last-child { border-bottom: none; }
-
-.balance-card {
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 14px;
-  text-align: center;
-  box-shadow: 0 2px 8px var(--shadow);
-}
-.balance-card.positive { background: #fff4f4; border: 2px solid #f0b0b0; }
-.balance-card.zero { background: #f6ffe8; border: 2px solid #b5d99c; }
-.balance-card.negative { background: var(--cream); border: 2px solid var(--gold); }
-.balance-title { font-size: 12px; font-weight: 700; color: var(--brown); margin-bottom: 6px; }
-.balance-num { font-size: 36px; font-weight: 800; line-height: 1.1; }
-.balance-num.positive { color: #c00; }
-.balance-num.zero { color: #3a7a10; }
-.balance-num.negative { color: var(--brown-dark); }
-.balance-sub { font-size: 11px; color: var(--brown-light); margin-top: 6px; line-height: 1.6; }
-.prepay-form { display: flex; gap: 8px; margin-top: 14px; }
-.prepay-form input { flex: 1; }
-.admin-task-info { flex: 1; }
-.admin-task-name { font-size: 14px; font-weight: 700; color: var(--brown-dark); }
-.admin-task-meta { font-size: 11px; color: var(--brown-light); margin-top: 2px; }
+/* シート・トースト */
+.overlay{position:fixed;inset:0;background:rgba(42,33,24,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.overlay[hidden]{display:none}
+.sheet{width:100%;max-width:480px;background:var(--paper);border-top:2px solid var(--ink);border-radius:24px 24px 0 0;padding:18px 18px calc(22px + env(safe-area-inset-bottom));max-height:88vh;overflow-y:auto}
+.sheet h2{font-family:var(--font-display);font-weight:900;font-size:18px;margin-bottom:14px}
+.sheet-actions{display:flex;gap:10px;margin-top:16px}
+.sheet-actions .btn{flex:1}
+.diff{background:var(--white);border:2px solid var(--ink);border-radius:14px;padding:4px 12px;margin-bottom:10px}
+.diff-row{padding:8px 0;border-bottom:2px solid var(--muted);font-size:13px}
+.diff-row:last-child{border-bottom:0}
+.diff-row b{display:block;font-size:14px}
+.diff-row span{color:var(--ink-3)}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(16px);background:var(--ink);color:var(--paper);font-family:var(--font-display);font-weight:700;font-size:13px;padding:11px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;max-width:88%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
+<div id="app">
+  <header class="head">
+    <div class="logo-mark" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A2118" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/><path d="M9.5 14.5l2 2 3.5-4"/></svg></div>
+    <div class="logo">Yay Job</div>
+  </header>
 
-<!-- HEADER -->
-<div class="header">
-  <div>
-    <div class="header-title" style="display:flex;align-items:center;gap:10px;font-size:24px;"><img src="icon-192.png" style="height:36px;width:36px;border-radius:8px;display:block;" alt="Yay Job"><span style="font-family:Georgia,serif;font-style:italic;font-weight:700;color:#6B3F10;letter-spacing:1px;">Yay Job</span></div>
-    
-  </div>
-
+  <main>
+    <section class="screen" id="screen-today" aria-label="今日"></section>
+    <section class="screen" id="screen-week" aria-label="週間"></section>
+    <section class="screen" id="screen-pay" aria-label="支払い"></section>
+    <section class="screen" id="screen-report" aria-label="レポート"></section>
+    <section class="screen" id="screen-settings" aria-label="設定"></section>
+  </main>
 </div>
 
-<!-- NAV TABS -->
-<div class="nav-tabs" id="navTabs" style="display:none">
-  <button class="nav-tab active" onclick="showTab('today')" id="tab-today">今日</button>
-  <button class="nav-tab" onclick="showTab('week')" id="tab-week">週間</button>
-  <button class="nav-tab" onclick="showTab('payment')" id="tab-payment">支払い</button>
-  <button class="nav-tab" onclick="showTab('report')" id="tab-report">レポート</button>
-  <button class="nav-tab" onclick="showTab('settings')" id="tab-settings">設定</button>
-</div>
+<nav class="tabs" aria-label="メニュー"><div class="tabs-in" id="tabs"></div></nav>
 
-<div class="main" id="mainContent" style="display:none">
-
-  <!-- TODAY -->
-  <div class="section active" id="section-today">
-    <div class="date-bar">
-      <button class="date-nav" onclick="changeDate(-1)">‹</button>
-      <span class="date-text" id="dateDisplay"></span>
-      <button class="date-nav" onclick="changeDate(1)">›</button>
-    </div>
-    <div id="todayTaskList"></div>
-  </div>
-
-  <!-- WEEK -->
-  <div class="section" id="section-week">
-    <div class="card">
-      <div class="card-title">今週のサマリー</div>
-      <div class="summary-grid" id="weekSummary"></div>
-    </div>
-    <div id="weekList"></div>
-  </div>
-
-  <!-- PAYMENT -->
-  <div class="section" id="section-payment">
-    <div id="paymentContent"></div>
-  </div>
-
-  <!-- REPORT -->
-  <div class="section" id="section-report">
-    <div class="card">
-      <div class="card-title">今週のレポート</div>
-      <div class="report-box" id="reportText"></div>
-      <button class="copy-btn" onclick="copyReport()" id="copyBtn">LINEにコピー</button>
-      <button class="copy-btn" onclick="saveReportToHistory()" id="saveReportBtn" style="background:var(--cream);color:var(--brown-dark);margin-top:8px;">この週を履歴に保存</button>
-    </div>
-    <div class="card">
-      <div class="card-title">レポート履歴</div>
-      <div id="reportHistoryList"></div>
-    </div>
-  </div>
-
-  <!-- SETTINGS -->
-  <div class="section" id="section-settings">
-    <div class="card">
-      <div class="card-title">プロフィール</div>
-      <div class="form-group">
-        <label class="form-label">あなたの名前（任意）</label>
-        <input class="form-input" id="settingsNameInput" placeholder="名前" maxlength="20">
-      </div>
-      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px" onclick="saveNameFromSettings()">名前を保存</button>
-    </div>
-    <div class="card">
-      <div class="card-title">タスクを追加</div>
-      <div class="form-group">
-        <label class="form-label">タスク名</label>
-        <input class="form-input" id="taskName" placeholder="例：食器洗い">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">対価（15分あたり・円）</label>
-          <input class="form-input" id="taskPay" type="number" placeholder="例：50">
-        </div>
-        <div class="form-group">
-          <label class="form-label">所要時間（分）</label>
-          <input class="form-input" id="taskDuration" type="number" placeholder="例：30">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">作業OK 開始時間</label>
-          <input class="form-input" id="taskStart" type="time">
-        </div>
-        <div class="form-group">
-          <label class="form-label">作業OK 終了時間</label>
-          <input class="form-input" id="taskEnd" type="time">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">実施する曜日</label>
-        <div class="day-check-group" id="dayChecks"></div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">品質基準（任意）</label>
-        <input class="form-input" id="taskQuality" placeholder="例：汚れが残らないこと">
-      </div>
-      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px" onclick="addTask()">追加する</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">登録済みタスク</div>
-      <div id="adminTaskList"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">バックアップ</div>
-      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;margin-bottom:9px" onclick="exportBackup()">書き出す（JSON）</button>
-      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px" onclick="document.getElementById('backupImportInput').click()">読み込む</button>
-      <div style="font-size:11px;color:var(--brown-light);margin-top:8px">この端末の中だけに保存されています。機種変更の前に書き出してください。読み込むと現在のデータが上書きされます。</div>
-    </div>
-  </div>
-
-</div>
-
-<div class="toast" id="toast"></div>
-<input type="file" id="backupImportInput" accept="application/json" style="display:none" onchange="importBackup(event)">
+<div class="overlay" id="overlay" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="handleImportFile(event)">
 
 <script>
-const DAYS = ['日','月','火','水','木','金','土'];
-const DAYS_FULL = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-let currentDate = new Date(); currentDate.setHours(0,0,0,0);
+/* ================================================================== */
+/* 定数                                                                 */
+/* ================================================================== */
+const APP_VERSION = 'v8';
+const SCHEMA = 2;
+const LS_PREFIX = 'yayjob_';
+// 新しいデータの保存先（旧キーとは別。旧キーは読み書きしない）
+const KEY = {
+  schema: 'schema',
+  settings: 'v2_settings',
+  logs: 'v2_logs',
+  payments: 'v2_payments',
+  reports: 'v2_reports'
+};
+// v7 までのキー。新バージョンでは書き換えない（v7 に戻せるように残す）
+const LEGACY_KEYS = ['tasks', 'logs', 'payments', 'name', 'reports'];
+const SNAPSHOT_KEY = 'premigration_v7';   // 移行前の旧キーの控え（初回のみ作成）
+const PREIMPORT_KEY = 'preimport_backup'; // 読み込み直前の控え（読み込みのたびに更新）
 
-function gs(key, def) { try { return JSON.parse(localStorage.getItem('yayjob_' + key)) ?? def; } catch { return def; } }
-function ss(key, val) { localStorage.setItem('yayjob_' + key, JSON.stringify(val)); }
-function getTasks() { return gs('tasks', []); }
-function setTasks(t) { ss('tasks', t); }
-function getLogs() { return gs('logs', {}); }
-function setLogs(l) { ss('logs', l); }
-function getPayments() { return gs('payments', []); }
-function setPayments(p) { ss('payments', p); }
-function getName() { return gs('name', ''); }
-function setName(n) { ss('name', n); }
+const DOW = ['日','月','火','水','木','金','土'];
+const QUALITY = [
+  { key: 'perfect', mark: '◎', label: '完璧' },
+  { key: 'ok',      mark: '○', label: 'OK' },
+  { key: 'partial', mark: '△', label: '一部' }
+];
+const DEFAULT_RATES = { perfect: 1, ok: 0.5, partial: 0.25 };
+const COMMON_GROUP = 'daily';
 
-function dateKey(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function calcTotalPay(per15, min) { return Math.round(Number(per15) * Number(min) / 15); }
+const DEFAULT_TASKS = [
+  { id: 'v2-hallway',  name: '廊下と階段のワイパー',   short: '廊下と階段',     abbr: '廊', minutes: 15, baseAmount: 200, maxPerWeek: 2, dailyGroup: COMMON_GROUP, weekdays: null,
+    criteria: '廊下全体と階段の全段にかけて、シートを捨てる。物がない状態から始める。' },
+  { id: 'v2-entrance', name: '玄関の掃き掃除',         short: '玄関の掃き掃除', abbr: '玄', minutes: 15, baseAmount: 200, maxPerWeek: 2, dailyGroup: COMMON_GROUP, weekdays: null,
+    criteria: '靴をそろえて端に寄せ、たたきの砂やほこりを掃いて捨てる。' },
+  { id: 'v2-living',   name: 'リビングの床のワイパー', short: 'リビングの床',   abbr: '床', minutes: 15, baseAmount: 200, maxPerWeek: 2, dailyGroup: COMMON_GROUP, weekdays: null,
+    criteria: '床に物がない状態から、リビング全体にワイパーをかけて、シートを捨てる。' },
+  { id: 'v2-toilet',   name: 'トイレ掃除',             short: 'トイレ掃除',     abbr: 'ト', minutes: 15, baseAmount: 200, maxPerWeek: 2, dailyGroup: COMMON_GROUP, weekdays: null,
+    criteria: '15分でできる範囲で、便器・床・手洗いを拭く。' },
+  { id: 'v2-table',    name: 'テーブルを空にして拭く', short: 'テーブルを拭く', abbr: '卓', minutes: 15, baseAmount: 200, maxPerWeek: 2, dailyGroup: COMMON_GROUP, weekdays: null,
+    criteria: '自分の物は先に戻す。他の人の物は持ち主別のかごに入れて、全面を拭く。' },
+  { id: 'v2-bath',     name: 'お風呂掃除',             short: 'お風呂掃除',     abbr: '風', minutes: 30, baseAmount: 400, maxPerWeek: 1, dailyGroup: COMMON_GROUP, weekdays: [6, 0], weekdaysLabel: '土日だけ',
+    criteria: '浴槽・床・壁を洗って、排水口のゴミを捨てる。' }
+];
 
-// INIT
-window.onload = () => {
-  startApp(getName());
-  // build day checks
-  const dc = document.getElementById('dayChecks');
-  DAYS.forEach((d, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'day-check'; btn.textContent = d;
-    btn.dataset.day = DAYS_FULL[i];
-    btn.onclick = () => btn.classList.toggle('selected');
-    dc.appendChild(btn);
-  });
+const I = {
+  chevL: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg>',
+  chevR: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg>',
+  check: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A2118" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  checkLg: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A2118" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  pause: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A7A66" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>',
+  pauseSm: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A7A66" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>',
+  pauseInk: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A2118" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>',
+  undo: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2A2118" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7L4 12l5 5"/><path d="M4 12h10a5 5 0 010 10h-2"/></svg>',
+  down: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A2118" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>',
+  up: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A2118" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V8M7 13l5-5 5 5M5 4h14"/></svg>',
+  trash: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A4A3A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
+  info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A2118" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
+  tabToday: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg>',
+  tabWeek: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+  tabPay: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 8l3 4 3-4M9 13h6M9 16h6M12 12v6"/></svg>',
+  tabReport: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-7"/></svg>',
+  tabSettings: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>'
 };
 
-function saveNameFromSettings() {
-  const n = document.getElementById('settingsNameInput').value.trim();
-  setName(n);
-  showToast('名前を保存しました');
+/* ================================================================== */
+/* ユーティリティ（日付はすべて端末のローカル時刻）                           */
+/* ================================================================== */
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function pad2(n){ return String(n).padStart(2, '0'); }
+function toKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function fromKey(k){ const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); }
+function addDays(k, n){ const d = fromKey(k); d.setDate(d.getDate() + n); return toKey(d); }
+function todayKey(){ return toKey(new Date()); }
+/* 週は月曜始まり。その日を含む週の月曜日のキー */
+function mondayOf(k){ const back = (fromKey(k).getDay() + 6) % 7; return addDays(k, -back); }
+function weekKeys(monKey){ return [0,1,2,3,4,5,6].map(i => addDays(monKey, i)); }
+function dowOf(k){ return fromKey(k).getDay(); }
+function labelMDJ(k){ const d = fromKey(k); return `${d.getMonth()+1}月${d.getDate()}日（${DOW[d.getDay()]}）`; }
+function labelMDShort(k){ const d = fromKey(k); return `${d.getMonth()+1}/${d.getDate()}(${DOW[d.getDay()]})`; }
+function labelMJ(k){ const d = fromKey(k); return `${d.getMonth()+1}月${d.getDate()}日`; }
+function timeHM(iso){ const d = new Date(iso); return `${d.getHours()}:${pad2(d.getMinutes())}`; }
+function yen(n){ return '¥' + Math.round(n).toLocaleString('ja-JP'); }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ================================================================== */
+/* localStorage                                                       */
+/* ================================================================== */
+function rawGet(key){ try{ return localStorage.getItem(LS_PREFIX + key); }catch{ return null; } }
+function gs(key, def){
+  const v = rawGet(key);
+  if (v === null) return def;
+  try{ const p = JSON.parse(v); return p ?? def; }catch{ return def; }
 }
+function ss(key, val){ localStorage.setItem(LS_PREFIX + key, JSON.stringify(val)); }
 
-function startApp(name) {
-  const inp = document.getElementById('settingsNameInput');
-  if (inp) inp.value = name || '';
-  document.getElementById('navTabs').style.display = 'flex';
-  document.getElementById('mainContent').style.display = 'block';
-  renderToday();
-  renderSettings();
-}
+function getSettings(){ return gs(KEY.settings, null) || defaultSettings(); }
+function setSettings(s){ ss(KEY.settings, s); }
+function getLogs(){ const l = gs(KEY.logs, {}); return (l && typeof l === 'object' && !Array.isArray(l)) ? l : {}; }
+function setLogs(l){ ss(KEY.logs, l); }
+function getPayments(){ const p = gs(KEY.payments, []); return Array.isArray(p) ? p : []; }
+function setPayments(p){ ss(KEY.payments, p); }
+function getReports(){ const r = gs(KEY.reports, []); return Array.isArray(r) ? r : []; }
+function setReports(r){ ss(KEY.reports, r); }
 
-function showTab(name) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('section-' + name).classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
-  if (name === 'week') renderWeek();
-  if (name === 'payment') renderPayment();
-  if (name === 'report') renderReport();
-}
-
-function changeDate(dir) {
-  currentDate.setDate(currentDate.getDate() + dir);
-  renderToday();
-}
-
-function renderToday() {
-  const dk = dateKey(currentDate);
-  const isToday = dateKey(new Date()) === dk;
-  const dayLabel = DAYS[currentDate.getDay()];
-  document.getElementById('dateDisplay').textContent =
-    `${currentDate.getMonth()+1}月${currentDate.getDate()}日（${dayLabel}）${isToday ? ' ← 今日' : ''}`;
-
-  const tasks = getTasks().filter(t => t.days && t.days.includes(DAYS_FULL[currentDate.getDay()]));
-  const logs = getLogs();
-  const dayLogs = logs[dk] || {};
-  const el = document.getElementById('todayTaskList');
-
-  if (!tasks.length) {
-    el.innerHTML = '<div class="empty">今日のタスクはありません</div>'; return;
-  }
-
-  el.innerHTML = tasks.map(t => {
-    const log = dayLogs[t.id] || {};
-    const isDone = log.status === 'done';
-    const isMissed = log.status === 'missed';
-
-    let statusBadge = isDone
-      ? '<span class="status-badge status-done">完了</span>'
-      : isMissed ? '<span class="status-badge status-miss">未実施</span>'
-      : '<span class="status-badge status-pending">未記録</span>';
-
-    let qualitySection = '';
-    if (isDone && t.qualityCriteria) {
-      const q = log.quality || '';
-      qualitySection = `<div class="quality-row">
-        <span class="quality-label">品質：</span>
-        <button class="quality-btn ${q==='perfect'?'selected':''}" onclick="setQuality('${dk}','${t.id}','perfect')">◎ 完璧</button>
-        <button class="quality-btn ${q==='ok'?'selected':''}" onclick="setQuality('${dk}','${t.id}','ok')">○ OK</button>
-        <button class="quality-btn ${q==='partial'?'selected':''}" onclick="setQuality('${dk}','${t.id}','partial')">△ 一部</button>
-      </div>`;
-    }
-
-    let actions = (!isDone && !isMissed)
-      ? `<div class="task-actions">
-          <button class="btn btn-done" onclick="markTask('${dk}','${t.id}','done')">やった！</button>
-          <button class="btn btn-miss" onclick="markTask('${dk}','${t.id}','missed')">やらなかった</button>
-        </div>`
-      : `<div class="task-actions">
-          <button class="btn btn-miss" onclick="markTask('${dk}','${t.id}','pending')">↩ 取り消し</button>
-        </div>`;
-
-    return `<div class="task-item ${isDone?'done':isMissed?'missed':''}">
-      <div class="task-header">
-        <div>
-          <div class="task-name">${t.name}</div>
-          <div class="task-meta">${(t.startTime||t.endTime) ? '作業OK: '+(t.startTime||'')+(t.startTime&&t.endTime?'〜':'')+(t.endTime||'') : ''}</div>
-          ${t.qualityCriteria ? `<div class="task-meta">基準: ${t.qualityCriteria}</div>` : ''}
-        </div>
-        <div style="text-align:right">
-          <div class="task-pay">¥${t.pay}</div>
-          <div class="task-pay-sub">¥${t.payPer15}/15分 · ${t.duration}分</div>
-          <div style="margin-top:5px">${statusBadge}</div>
-        </div>
-      </div>
-      ${qualitySection}${actions}
-    </div>`;
-  }).join('');
-}
-
-function markTask(dk, taskId, status) {
-  const logs = getLogs();
-  if (!logs[dk]) logs[dk] = {};
-  if (status === 'pending') delete logs[dk][taskId];
-  else logs[dk][taskId] = { status, timestamp: new Date().toISOString() };
-  setLogs(logs);
-  showToast(status === 'done' ? '記録しました！' : status === 'missed' ? '記録しました' : '取り消しました');
-  renderToday();
-}
-
-function setQuality(dk, taskId, quality) {
-  const logs = getLogs();
-  if (logs[dk] && logs[dk][taskId]) { logs[dk][taskId].quality = quality; setLogs(logs); renderToday(); }
-}
-
-function renderWeek() {
-  const logs = getLogs();
-  const today = new Date(); today.setHours(0,0,0,0);
-  const dow = today.getDay();
-  const monday = new Date(today); monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
-  let totalDone=0, totalMissed=0, totalEarned=0, totalTasks=0;
-  let weekRows = [];
-
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday); d.setDate(monday.getDate() + i);
-    const dk = dateKey(d);
-    const tasks = getTasks().filter(t => t.days && t.days.includes(DAYS_FULL[d.getDay()]));
-    const dayLogs = logs[dk] || {};
-    tasks.forEach(t => {
-      totalTasks++;
-      const log = dayLogs[t.id] || {};
-      if (log.status === 'done') { totalDone++; totalEarned += t.pay; }
-      else if (log.status === 'missed') totalMissed++;
-    });
-    if (tasks.length) {
-      const doneCnt = tasks.filter(t => (dayLogs[t.id]||{}).status === 'done').length;
-      weekRows.push({ d, tasks, doneCnt, dayLogs });
-    }
-  }
-
-  const pending = totalTasks - totalDone - totalMissed;
-  document.getElementById('weekSummary').innerHTML = `
-    <div class="summary-box"><div class="summary-num">${totalDone}</div><div class="summary-label">完了</div></div>
-    <div class="summary-box"><div class="summary-num">¥${totalEarned}</div><div class="summary-label">今週の獲得</div></div>
-    <div class="summary-box"><div class="summary-num">${totalMissed}</div><div class="summary-label">未実施</div></div>
-    <div class="summary-box"><div class="summary-num">${pending}</div><div class="summary-label">未記録</div></div>`;
-
-  document.getElementById('weekList').innerHTML = weekRows.map(({ d, tasks, doneCnt, dayLogs }) => `
-    <div class="card">
-      <div class="card-title">${d.getMonth()+1}/${d.getDate()}（${DAYS[d.getDay()]}） <span class="badge">${doneCnt}/${tasks.length}</span></div>
-      ${tasks.map(t => {
-        const s = (dayLogs[t.id]||{}).status;
-        const badge = s==='done' ? '<span class="status-badge status-done">完了</span>'
-          : s==='missed' ? '<span class="status-badge status-miss">未実施</span>'
-          : '<span class="status-badge status-pending">－</span>';
-        return `<div class="pay-row">
-          <div class="pay-info"><div class="pay-name">${t.name}</div></div>
-          ${badge}
-          <div class="pay-amount">${s==='done'?'¥'+t.pay:'¥0'}</div>
-        </div>`;
-      }).join('')}
-    </div>`).join('') || '<div class="empty">今週のタスクはありません</div>';
-}
-
-function getPrepayTotal() {
-  return getPayments()
-    .filter(p => p.type === 'prepaid_advance')
-    .reduce((s, p) => s + Number(p.amount), 0);
-}
-
-function getEarnedTotal() {
-  const logs = getLogs();
-  const tasks = getTasks();
-  let total = 0;
-  Object.values(logs).forEach(dayLogs => {
-    Object.entries(dayLogs).forEach(([taskId, log]) => {
-      if (log.status === 'done') {
-        const task = tasks.find(t => t.id === taskId);
-        if (task) total += task.pay;
-      }
-    });
-  });
-  return total;
-}
-
-function renderPayment() {
-  const logs = getLogs();
-  const tasks = getTasks();
-  const payments = getPayments();
-  const name = getName();
-
-  // --- Balance calc ---
-  const prepayTotal = getPrepayTotal();
-  const earnedTotal = getEarnedTotal();
-  const balance = earnedTotal - prepayTotal; // negative = still owes work, positive = earned more than prepaid
-
-  let balanceClass, balanceMsg;
-  if (prepayTotal === 0) {
-    balanceClass = 'zero';
-    balanceMsg = '先払いの記録はありません';
-  } else if (balance < 0) {
-    balanceClass = 'positive';
-    balanceMsg = `先払い ¥${prepayTotal} − 労働済み ¥${earnedTotal}
-あと ¥${Math.abs(balance)} 分働くと精算完了`;
-  } else if (balance === 0) {
-    balanceClass = 'zero';
-    balanceMsg = `先払い ¥${prepayTotal} ちょうど精算済み！`;
-  } else {
-    balanceClass = 'negative';
-    balanceMsg = `先払い ¥${prepayTotal} − 労働済み ¥${earnedTotal}
-¥${balance} 分の追加支払いがあります`;
-  }
-
-  let html = '';
-
-  // Balance card
-  html += `<div class="balance-card ${balanceClass}">
-    <div class="balance-title">先払い残高</div>
-    <div class="balance-num ${balanceClass}">${balance < 0 ? '−¥'+Math.abs(balance) : balance === 0 && prepayTotal === 0 ? '−' : '+¥'+balance}</div>
-    <div class="balance-sub">${balanceMsg}</div>
-  </div>`;
-
-  // Prepay input card
-  html += `<div class="card">
-    <div class="card-title">先払いを記録する</div>
-    <div class="prepay-form">
-      <input class="form-input" id="prepayAmount" type="number" placeholder="金額（円）">
-      <button class="btn btn-primary" onclick="addPrepay()">記録</button>
-    </div>
-    <div style="font-size:11px;color:var(--brown-light);margin-top:8px">先払いしてもらった金額を入力してください</div>
-  </div>`;
-
-  // Unpaid done tasks
-  let unpaid = [];
-  Object.entries(logs).forEach(([dk, dayLogs]) => {
-    Object.entries(dayLogs).forEach(([taskId, log]) => {
-      if (log.status !== 'done') return;
-      const task = tasks.find(t => t.id === taskId);
-      if (!task) return;
-      if (payments.some(p => p.taskId === taskId && p.dk === dk && p.type === 'paid')) return;
-      unpaid.push({ dk, taskId, task });
-    });
-  });
-
-  if (unpaid.length) {
-    html += `<div class="card"><div class="card-title">後払い未支払い <span class="badge">${unpaid.length}件</span></div>`;
-    html += unpaid.map(({ dk, taskId, task }) => {
-      const d = new Date(dk + 'T00:00:00');
-      return `<div class="pay-row">
-        <div class="pay-info">
-          <div class="pay-name">${task.name}</div>
-          <div class="pay-detail">${d.getMonth()+1}/${d.getDate()}</div>
-        </div>
-        <div class="pay-amount">¥${task.pay}</div>
-        <div class="pay-actions">
-          <button class="btn btn-primary" onclick="payTask('${dk}','${taskId}','paid')">支払い済みにする</button>
-        </div>
-      </div>`;
-    }).join('');
-    html += '</div>';
-  }
-
-  // History
-  const history = payments.slice().reverse();
-  if (history.length) {
-    html += '<div class="card"><div class="card-title">履歴</div>';
-    html += history.slice(0, 30).map(p => {
-      const d = new Date(p.paidAt);
-      const dateStr = `${d.getMonth()+1}/${d.getDate()}`;
-      if (p.type === 'prepaid_advance') {
-        return `<div class="pay-row">
-          <div class="pay-info"><div class="pay-name">先払い受取</div><div class="pay-detail">${dateStr}</div></div>
-          <span class="status-badge status-prepaid">先払い</span>
-          <div class="pay-amount">¥${p.amount}</div>
-        </div>`;
-      }
-      const task = tasks.find(t => t.id === p.taskId);
-      return `<div class="pay-row">
-        <div class="pay-info">
-          <div class="pay-name">${task ? task.name : '（削除済み）'}</div>
-          <div class="pay-detail">${dateStr}</div>
-        </div>
-        <span class="status-badge status-paid">支払済</span>
-        <div class="pay-amount">¥${p.amount}</div>
-      </div>`;
-    }).join('');
-    html += '</div>';
-  }
-
-  document.getElementById('paymentContent').innerHTML = html;
-}
-
-function addPrepay() {
-  const amt = Number(document.getElementById('prepayAmount').value);
-  if (!amt || amt <= 0) { showToast('金額を入力してください'); return; }
-  const payments = getPayments();
-  payments.push({ type: 'prepaid_advance', amount: amt, paidAt: new Date().toISOString() });
-  setPayments(payments);
-  document.getElementById('prepayAmount').value = '';
-  showToast(`¥${amt} の先払いを記録しました`);
-  renderPayment();
-}
-
-function payTask(dk, taskId, type) {
-  const task = getTasks().find(t => t.id === taskId);
-  if (!task) return;
-  const payments = getPayments();
-  payments.push({ dk, taskId, amount: task.pay, type: 'paid', paidAt: new Date().toISOString() });
-  setPayments(payments);
-  showToast('支払いを記録しました');
-  renderPayment();
-}
-
-function getReports() { return gs('reports', []); }
-function setReports(r) { ss('reports', r); }
-
-// Build report text for the week containing the given reference date
-function buildReportText(refDate) {
-  const logs = getLogs();
-  const tasks = getTasks();
-  const payments = getPayments();
-  const name = getName();
-  const dow = refDate.getDay();
-  const monday = new Date(refDate); monday.setDate(refDate.getDate() - (dow === 0 ? 6 : dow - 1));
-  monday.setHours(0,0,0,0);
-  const sun = new Date(monday); sun.setDate(monday.getDate() + 6);
-
-  let totalDone=0, totalMissed=0, totalEarned=0;
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday); d.setDate(monday.getDate() + i);
-    const dk = dateKey(d);
-    const dayTasks = tasks.filter(t => t.days && t.days.includes(DAYS_FULL[d.getDay()]));
-    const dayLogs = logs[dk] || {};
-    dayTasks.forEach(t => {
-      const log = dayLogs[t.id] || {};
-      if (log.status === 'done') { totalDone++; totalEarned += t.pay; }
-      else if (log.status === 'missed') totalMissed++;
-    });
-  }
-
-  const prepayTotal = getPrepayTotal();
-  const earnedAllTime = getEarnedTotal();
-  const prepayBalance = earnedAllTime - prepayTotal;
-
-  const lines = [
-    '【Yay Job 週次レポート】',
-    `${monday.getMonth()+1}/${monday.getDate()}〜${sun.getMonth()+1}/${sun.getDate()}`,
-    '',
-    `担当: ${name || '（未設定）'}`,
-    `完了: ${totalDone}件 / 未実施: ${totalMissed}件`,
-    `今週の獲得: ¥${totalEarned}`,
-    '',
-    '【先払い残高】',
-    `先払い合計: ¥${prepayTotal}`,
-    `労働済み合計: ¥${earnedAllTime}`,
-    prepayBalance < 0
-      ? `残り: −¥${Math.abs(prepayBalance)}（あと ¥${Math.abs(prepayBalance)} 分働くと精算）`
-      : prepayBalance === 0 && prepayTotal > 0
-      ? '精算済み！'
-      : prepayTotal > 0 ? `追加支払い: +¥${prepayBalance}` : '先払いなし',
-    '',
-    'Yay Job より',
-  ];
+function defaultSettings(){
   return {
-    text: lines.join('\n'),
-    weekKey: dateKey(monday),
-    label: `${monday.getMonth()+1}/${monday.getDate()}〜${sun.getMonth()+1}/${sun.getDate()}`
+    version: SCHEMA,
+    qualityRates: { ...DEFAULT_RATES },
+    tasks: DEFAULT_TASKS.map(t => ({ ...t, active: true }))
   };
 }
 
-function renderReport() {
-  const r = buildReportText(new Date());
-  document.getElementById('reportText').textContent = r.text;
-  renderReportHistory();
+/* ================================================================== */
+/* 移行・整合（起動時と、バックアップの読み込み後に実行）                        */
+/* ================================================================== */
+function ensureSchema(){
+  // 1) 旧キーの控え（初回だけ。旧キー自体には触れない）
+  if (rawGet(SNAPSHOT_KEY) === null){
+    const data = {};
+    LEGACY_KEYS.forEach(k => { const v = rawGet(k); if (v !== null) data[LS_PREFIX + k] = v; });
+    if (Object.keys(data).length){
+      ss(SNAPSHOT_KEY, { savedAt: new Date().toISOString(), fromVersion: 'v7', data });
+    }
+  }
+
+  // 2) 設定: 不足している家事・項目を補う（既存の値は上書きしない）
+  const s = gs(KEY.settings, null) || defaultSettings();
+  if (!s.qualityRates || typeof s.qualityRates !== 'object') s.qualityRates = { ...DEFAULT_RATES };
+  QUALITY.forEach(q => {
+    const v = Number(s.qualityRates[q.key]);
+    s.qualityRates[q.key] = (isFinite(v) && v >= 0) ? v : DEFAULT_RATES[q.key];
+  });
+  if (!Array.isArray(s.tasks)) s.tasks = [];
+  DEFAULT_TASKS.forEach(def => {
+    const cur = s.tasks.find(t => t.id === def.id);
+    if (!cur) s.tasks.push({ ...def, active: true });
+    else Object.keys(def).forEach(k => { if (cur[k] === undefined) cur[k] = def[k]; });
+  });
+  s.tasks.forEach(t => { if (t.active === undefined) t.active = true; });
+  s.version = SCHEMA;
+  setSettings(s);
+
+  // 3) 記録: 完了の金額が欠けていれば補う
+  const logs = getLogs();
+  Object.keys(logs).forEach(dk => {
+    const day = logs[dk];
+    if (!day || typeof day !== 'object'){ delete logs[dk]; return; }
+    Object.keys(day).forEach(tid => {
+      const e = day[tid];
+      if (!e || typeof e !== 'object'){ delete day[tid]; return; }
+      if (e.status === 'done'){
+        if (!QUALITY.some(q => q.key === e.quality)) e.quality = 'perfect';
+        if (!isFinite(Number(e.base))){
+          const t = s.tasks.find(x => x.id === tid);
+          e.base = t ? t.baseAmount : 0;
+        }
+        if (!isFinite(Number(e.amount))) e.amount = calcAmount(e.base, e.quality, s.qualityRates);
+      }
+    });
+    if (!Object.keys(day).length) delete logs[dk];
+  });
+  setLogs(logs);
+
+  // 4) 支払い・レポートは配列であることだけ保証
+  setPayments(getPayments().filter(p => p && typeof p === 'object'));
+  setReports(getReports().filter(r => r && typeof r === 'object' && r.weekKey));
+
+  ss(KEY.schema, SCHEMA);
 }
 
-function saveReportToHistory() {
-  const r = buildReportText(new Date());
-  const reports = getReports();
-  // overwrite if same week already saved
-  const idx = reports.findIndex(x => x.weekKey === r.weekKey);
-  const entry = { weekKey: r.weekKey, label: r.label, text: r.text, savedAt: new Date().toISOString() };
-  if (idx >= 0) reports[idx] = entry;
-  else reports.push(entry);
+/* ================================================================== */
+/* ルール                                                               */
+/* ================================================================== */
+function activeTasks(){ return getSettings().tasks.filter(t => t.active); }
+function taskById(id){ return getSettings().tasks.find(t => t.id === id); }
+function calcAmount(base, quality, rates){
+  const r = rates && isFinite(Number(rates[quality])) ? Number(rates[quality]) : (DEFAULT_RATES[quality] ?? 1);
+  return Math.round(Number(base) * r);
+}
+function entryOf(logs, dk, tid){ return (logs[dk] || {})[tid] || null; }
+function weekDoneCount(logs, tid, dk){
+  return weekKeys(mondayOf(dk)).filter(k => (entryOf(logs, k, tid) || {}).status === 'done').length;
+}
+/* その日に、同じ dailyGroup で完了した家事（なければ null） */
+function doneInGroup(logs, dk, group){
+  const day = logs[dk] || {};
+  const tasks = getSettings().tasks;
+  for (const tid of Object.keys(day)){
+    if (day[tid].status !== 'done') continue;
+    const t = tasks.find(x => x.id === tid);
+    if (t && t.dailyGroup === group) return { task: t, entry: day[tid] };
+  }
+  return null;
+}
+function allowedOnDay(task, dk){ return !Array.isArray(task.weekdays) || task.weekdays.includes(dowOf(dk)); }
+
+function totals(){
+  const logs = getLogs();
+  let earned = 0;
+  Object.values(logs).forEach(day => Object.values(day).forEach(e => { if (e.status === 'done') earned += Number(e.amount) || 0; }));
+  const pays = getPayments();
+  const received = pays.filter(p => p.type === 'received').reduce((s, p) => s + (Number(p.amount) || 0), 0);
+  const advance  = pays.filter(p => p.type === 'advance').reduce((s, p) => s + (Number(p.amount) || 0), 0);
+  const net = earned - received - advance;
+  return { earned, received, advance, net, get: Math.max(net, 0), owe: Math.max(-net, 0) };
+}
+
+function weekStats(monKey, throughKey){
+  const logs = getLogs();
+  const keys = weekKeys(monKey).filter(k => !throughKey || k <= throughKey);
+  const tasks = getSettings().tasks;
+  const byTask = {};
+  let count = 0, minutes = 0, amount = 0, skips = 0;
+  keys.forEach(k => {
+    const day = logs[k] || {};
+    Object.keys(day).forEach(tid => {
+      const e = day[tid];
+      if (e.status === 'skipped'){ skips++; return; }
+      if (e.status !== 'done') return;
+      const t = tasks.find(x => x.id === tid);
+      const m = Number(e.minutes ?? (t ? t.minutes : 0)) || 0;
+      count++; minutes += m; amount += Number(e.amount) || 0;
+      const b = byTask[tid] || (byTask[tid] = { count: 0, amount: 0, q: { perfect: 0, ok: 0, partial: 0 } });
+      b.count++; b.amount += Number(e.amount) || 0; b.q[e.quality] = (b.q[e.quality] || 0) + 1;
+    });
+  });
+  return { count, minutes, amount, skips, byTask };
+}
+
+/* ================================================================== */
+/* 操作                                                                 */
+/* ================================================================== */
+function markDone(dk, tid){
+  const t = taskById(tid);
+  if (!t || dk > todayKey()) return;
+  const logs = getLogs();
+  if (!allowedOnDay(t, dk)) return;
+  if (doneInGroup(logs, dk, t.dailyGroup)) return;
+  if (weekDoneCount(logs, tid, dk) >= t.maxPerWeek) return;
+  const rates = getSettings().qualityRates;
+  if (!logs[dk]) logs[dk] = {};
+  logs[dk][tid] = {
+    status: 'done', quality: 'perfect',
+    base: t.baseAmount, minutes: t.minutes,
+    amount: calcAmount(t.baseAmount, 'perfect', rates),
+    at: new Date().toISOString()
+  };
+  setLogs(logs);
+  showToast('記録しました！');
+  renderToday(true);
+}
+function markSkip(dk, tid){
+  const t = taskById(tid);
+  if (!t || dk > todayKey() || !allowedOnDay(t, dk)) return;
+  const logs = getLogs();
+  const cur = entryOf(logs, dk, tid);
+  if (cur && cur.status === 'done') return;
+  if (!logs[dk]) logs[dk] = {};
+  logs[dk][tid] = { status: 'skipped', at: new Date().toISOString() };
+  setLogs(logs);
+  showToast('見送りにしました');
+  renderToday();
+}
+function undoEntry(dk, tid, msg){
+  const logs = getLogs();
+  if (logs[dk]){ delete logs[dk][tid]; if (!Object.keys(logs[dk]).length) delete logs[dk]; }
+  setLogs(logs);
+  showToast(msg || '取り消しました');
+  renderToday(true);
+}
+function confirmUndoDone(dk, tid){
+  const t = taskById(tid);
+  if (!confirm(`「${t ? t.name : 'この家事'}」の記録を取り消しますか？`)) return;
+  undoEntry(dk, tid);
+}
+function setQuality(dk, tid, q){
+  const logs = getLogs();
+  const e = entryOf(logs, dk, tid);
+  if (!e || e.status !== 'done') return;
+  e.quality = q;
+  e.amount = calcAmount(e.base, q, getSettings().qualityRates);
+  setLogs(logs);
+  renderToday();
+}
+
+/* ================================================================== */
+/* 状態と画面切り替え                                                       */
+/* ================================================================== */
+const TABS = [
+  { id: 'today',    label: '今日',     icon: I.tabToday },
+  { id: 'week',     label: '週間',     icon: I.tabWeek },
+  { id: 'pay',      label: '支払い',   icon: I.tabPay },
+  { id: 'report',   label: 'レポート', icon: I.tabReport },
+  { id: 'settings', label: '設定',     icon: I.tabSettings }
+];
+const state = {
+  tab: 'today',
+  date: todayKey(),
+  followToday: true,   // 今日を見ている間は、日付が変わったら自動で次の日へ
+  weekMon: mondayOf(todayKey()),
+  reportMon: mondayOf(todayKey())
+};
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = TABS.map(t =>
+    `<button class="tab" type="button" onclick="switchTab('${t.id}')" ${state.tab === t.id ? 'aria-current="page"' : ''}>${t.icon}${t.label}</button>`
+  ).join('');
+}
+function switchTab(id){
+  state.tab = id;
+  TABS.forEach(t => document.getElementById('screen-' + t.id).classList.toggle('active', t.id === id));
+  renderTabs();
+  renderCurrent();
+  window.scrollTo(0, 0);
+}
+function renderCurrent(){
+  ({ today: renderToday, week: renderWeek, pay: renderPay, report: renderReport, settings: renderSettings })[state.tab]();
+}
+
+/* ================================================================== */
+/* 今日                                                                 */
+/* ================================================================== */
+function changeDate(n){
+  const next = addDays(state.date, n);
+  if (next > todayKey()) return;
+  state.date = next;
+  state.followToday = next === todayKey();
+  renderToday(true);
+}
+function goToday(){ state.date = todayKey(); state.followToday = true; renderToday(true); }
+
+function dotsHtml(n, max, lg){
+  let h = '';
+  for (let i = 0; i < max; i++) h += `<span class="dot ${i < n ? 'on' : ''}"></span>`;
+  return `<span class="dots ${lg ? 'lg' : ''}" aria-hidden="true">${h}</span>`;
+}
+
+function renderToday(scrollTop){
+  const dk = state.date;
+  const isToday = dk === todayKey();
+  const logs = getLogs();
+  const s = getSettings();
+  const tasks = activeTasks();
+  const done = doneInGroup(logs, dk, COMMON_GROUP);
+  const dayWord = isToday ? '今日' : 'この日';
+
+  const head = `
+    <div class="titlebar">
+      <div>
+        <h1>${labelMDJ(dk)}</h1>
+        <div class="sub">${done ? `${dayWord}の家事はおしまいです` : `${dayWord}の家事は1つまで`}</div>
+      </div>
+      <div class="navbtns">
+        <button class="circle-btn" type="button" aria-label="前の日" onclick="changeDate(-1)">${I.chevL}</button>
+        <button class="circle-btn" type="button" aria-label="次の日" onclick="changeDate(1)" ${isToday ? 'disabled' : ''}>${I.chevR}</button>
+      </div>
+    </div>
+    ${isToday ? '' : `<button class="back-today" type="button" onclick="goToday()">今日に戻る</button>`}`;
+
+  let body;
+  if (done){
+    const { task, entry } = done;
+    const qBtns = QUALITY.map(q => `
+      <button class="q-btn" type="button" aria-pressed="${entry.quality === q.key}" onclick="setQuality('${dk}','${task.id}','${q.key}')">
+        ${q.mark} ${q.label}<span>${yen(calcAmount(entry.base, q.key, s.qualityRates))}</span>
+      </button>`).join('');
+    const others = tasks.filter(t => t.dailyGroup === COMMON_GROUP && t.id !== task.id).map(t => `
+      <div class="mini"><b>${esc(t.name)}${t.weekdaysLabel ? `（${esc(t.weekdaysLabel)}）` : ''}</b><span>今週 ${weekDoneCount(logs, t.id, dk)}/${t.maxPerWeek}回</span></div>`).join('');
+    body = `
+      <div class="done-card">
+        <div class="done-head">
+          <div class="done-badge">${I.checkLg}</div>
+          <div>
+            <div class="done-name">${esc(task.name)}</div>
+            <div class="done-time">${timeHM(entry.at)} に記録しました</div>
+          </div>
+          <div class="done-amt">${yen(entry.amount)}</div>
+        </div>
+        <div class="quality">
+          <div class="quality-lb">できばえでお手当が決まります</div>
+          <div class="quality-row">${qBtns}</div>
+        </div>
+        <button class="undo" type="button" onclick="confirmUndoDone('${dk}','${task.id}')">${I.undo}取り消す</button>
+      </div>
+      <div class="section-title soft">ほかの家事は${dayWord}はおしまい</div>
+      <div class="mini-list">${others}</div>`;
+  } else {
+    const cards = tasks.map(t => choreCard(t, dk, logs)).join('');
+    const r = s.qualityRates;
+    body = `
+      <div class="banner">${dayWord}は好きな家事を1つ選べます。やらない日があっても大丈夫です。</div>
+      <div class="stack">${cards}
+        <div class="guide">
+          お手当はできばえで変わります。
+          <table>
+            <tr><th></th><th>15分の家事</th><th>お風呂</th></tr>
+            ${QUALITY.map(q => `<tr><th>${q.mark} ${q.label}</th><td>${yen(calcAmount(200, q.key, r))}</td><td>${yen(calcAmount(400, q.key, r))}</td></tr>`).join('')}
+          </table>
+        </div>
+        <div class="footnote">物が残っていて始められないときは「見送り」を押します。お手当には影響しません。<br>どの家事も、物がない状態から始めます。自分の物（ハナの物・ルオの寝室にあるハナのスペース）の片付けは、お手当のない基本の家事です。</div>
+      </div>`;
+  }
+  document.getElementById('screen-today').innerHTML = head + body;
+  if (scrollTop) window.scrollTo(0, 0);
+}
+
+function choreCard(t, dk, logs){
+  const n = weekDoneCount(logs, t.id, dk);
+  const capped = n >= t.maxPerWeek;
+  const allowed = allowedOnDay(t, dk);
+  const entry = entryOf(logs, dk, t.id);
+  const skipped = entry && entry.status === 'skipped';
+  const tag = t.weekdaysLabel ? `<span class="tag">${esc(t.weekdaysLabel)}</span>` : '';
+  const countNote = t.weekdaysLabel ? `今週 ${n}/${t.maxPerWeek}回（土日どちらか1日）` : `今週 ${n}/${t.maxPerWeek}回`;
+
+  let foot;
+  if (capped){
+    foot = `<div class="info mint">${I.check}今週はおしまい。来週また選べます。</div>`;
+  } else if (!allowed){
+    foot = `
+      <div class="info plain">${I.info}${esc(t.name)}は土曜か日曜に選べます。</div>
+      <div class="actions">
+        <button class="btn btn-do" type="button" disabled>やった！</button>
+        <button class="btn btn-skip" type="button" disabled>見送り</button>
+      </div>`;
+  } else if (skipped){
+    foot = `
+      <div class="info skip">${I.pause}見送りにしました</div>
+      <div class="actions">
+        <button class="btn btn-do" type="button" onclick="markDone('${dk}','${t.id}')">やった！</button>
+        <button class="btn btn-skip" type="button" onclick="undoEntry('${dk}','${t.id}','見送りを取り消しました')">取り消す</button>
+      </div>`;
+  } else {
+    foot = `
+      <div class="actions">
+        <button class="btn btn-do" type="button" onclick="markDone('${dk}','${t.id}')">やった！</button>
+        <button class="btn btn-skip" type="button" onclick="markSkip('${dk}','${t.id}')">見送り</button>
+      </div>`;
+  }
+  return `
+    <div class="card chore ${capped ? 'off' : ''}">
+      <div class="chore-top">
+        <div class="chore-name">${esc(t.name)}${tag}</div>
+        <div class="pill">${yen(t.baseAmount)}<small>${t.minutes}分</small></div>
+      </div>
+      <div class="count">${dotsHtml(n, t.maxPerWeek)}<span>${countNote}</span></div>
+      ${capped ? '' : `<div class="criteria">${esc(t.criteria || '')}</div>`}
+      ${foot}
+    </div>`;
+}
+
+/* ================================================================== */
+/* 週間                                                                 */
+/* ================================================================== */
+function changeWeek(n){
+  const next = addDays(state.weekMon, 7 * n);
+  if (next > mondayOf(todayKey())) return;
+  state.weekMon = next;
+  renderWeek();
+}
+function renderWeek(){
+  const mon = state.weekMon;
+  const tk = todayKey();
+  const isThis = mon === mondayOf(tk);
+  const logs = getLogs();
+  const tasks = getSettings().tasks;
+  const st = weekStats(mon);
+  const word = isThis ? '今週' : 'この週';
+
+  const cells = weekKeys(mon).map(k => {
+    const day = logs[k] || {};
+    const doneTid = Object.keys(day).find(tid => day[tid].status === 'done');
+    const hasSkip = Object.values(day).some(e => e.status === 'skipped');
+    const t = doneTid ? tasks.find(x => x.id === doneTid) : null;
+    let stamp, label;
+    if (doneTid){ stamp = `<div class="stamp done" aria-hidden="true">${esc(t ? t.abbr : '済')}</div>`; label = `${t ? t.name : '家事'}をやった`; }
+    else if (hasSkip){ stamp = `<div class="stamp skip" aria-hidden="true">${I.pause}</div>`; label = '見送り'; }
+    else { stamp = `<div class="stamp" aria-hidden="true"></div>`; label = '記録なし'; }
+    const d = fromKey(k);
+    return `<div class="st ${k === tk ? 'today' : ''}" role="img" aria-label="${labelMDJ(k)} ${label}">
+      <div class="st-dow">${DOW[d.getDay()]}</div>${stamp}<div class="st-date">${d.getDate()}</div></div>`;
+  }).join('');
+
+  const rows = activeTasks().map(t => {
+    const n = (st.byTask[t.id] || {}).count || 0;
+    return `<div class="li"><div class="abbr" aria-hidden="true">${esc(t.abbr)}</div><div class="li-main">${esc(t.short || t.name)}</div>${dotsHtml(Math.min(n, t.maxPerWeek), t.maxPerWeek, true)}<div class="li-num" style="width:34px">${n}/${t.maxPerWeek}</div></div>`;
+  }).join('');
+
+  document.getElementById('screen-week').innerHTML = `
+    <div class="titlebar">
+      <div>
+        <h1 class="sm">${word}のスタンプ</h1>
+        <div class="sub">${labelMDJ(mon)} 〜 ${labelMDJ(addDays(mon, 6))}</div>
+      </div>
+      <div class="navbtns">
+        <button class="circle-btn" type="button" aria-label="前の週" onclick="changeWeek(-1)">${I.chevL}</button>
+        <button class="circle-btn" type="button" aria-label="次の週" onclick="changeWeek(1)" ${isThis ? 'disabled' : ''}>${I.chevR}</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;padding:14px 10px 12px">
+      <div class="stamps">${cells}</div>
+      <div class="legend">${I.pauseSm}は見送り（お手当には影響しません）</div>
+    </div>
+    <div class="earn">
+      <div><div class="earn-lb">${word}の獲得</div><div class="earn-amt">${yen(st.amount)}</div></div>
+      <div class="earn-sub">${st.count}回<br>合計${st.minutes}分</div>
+    </div>
+    <div class="section-title">家事ごとの回数</div>
+    <div class="list">${rows}</div>
+    <div class="note-box">${I.pauseInk}${word}の見送り ${st.skips}回（物が残っていて始められなかった日）</div>`;
+}
+
+/* ================================================================== */
+/* 支払い                                                               */
+/* ================================================================== */
+function renderPay(){
+  const t = totals();
+  const pays = getPayments().slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || '').localeCompare(a.createdAt || ''));
+  const hist = pays.length ? pays.map(p => `
+    <div class="li">
+      <div class="li-main">${p.type === 'advance' ? '先払いを記録' : 'お手当を受け取った'}<div class="sub">${p.date ? labelMJ(p.date) : ''}${p.note ? '・' + esc(p.note) : ''}</div></div>
+      <div class="${p.type === 'advance' ? 'yen-minus' : 'yen-plus'}">${p.type === 'advance' ? '−' : '+'}${yen(p.amount)}</div>
+      <button class="icon-btn" type="button" aria-label="この履歴を消す" onclick="deletePayment('${esc(p.id)}')">${I.trash}</button>
+    </div>`).join('') : '<div class="empty">まだ履歴はありません</div>';
+
+  document.getElementById('screen-pay').innerHTML = `
+    <div class="titlebar"><div><h1 class="sm">お手当と先払い</h1></div></div>
+    <div class="stack">
+      <div class="card money get">
+        <div class="money-lb">${I.down}もらえる分</div>
+        <div class="money-amt ${t.get === 0 ? 'zero' : ''}">${yen(t.get)}</div>
+        <div class="money-sub">家事のお手当のうち、まだ受け取っていない分</div>
+        <button class="btn btn-ink btn-block" type="button" onclick="openPaymentSheet('received')">お手当を受け取った</button>
+      </div>
+      <div class="card money owe">
+        <div class="money-lb">${I.up}返す分（先払い）</div>
+        <div class="money-amt ${t.owe === 0 ? 'zero' : ''}">${yen(t.owe)}</div>
+        <div class="money-sub">先に受け取ったお金のうち、まだ家事で返していない分</div>
+        <button class="btn btn-block" type="button" onclick="openPaymentSheet('advance')">先払いを記録</button>
+      </div>
+      <div class="net">
+        <div class="net-row"><b>差し引き</b><span>${t.net < 0 ? '−' : ''}${yen(Math.abs(t.net))}</span></div>
+        <div class="net-calc">お手当 ${yen(t.earned)} − 受け取り ${yen(t.received)} − 先払い ${yen(t.advance)}</div>
+      </div>
+    </div>
+    <div class="section-title">履歴</div>
+    <div class="list">${hist}</div>`;
+}
+
+function openPaymentSheet(type){
+  const t = totals();
+  const title = type === 'advance' ? '先払いを記録' : 'お手当を受け取った';
+  const hint = type === 'received' && t.get > 0 ? `<p class="small" style="margin:-4px 0 12px">いまのもらえる分は ${yen(t.get)} です。</p>` : '';
+  openSheet(`
+    <h2>${title}</h2>
+    <div class="field"><label for="payAmount">金額（円）</label><input id="payAmount" type="number" inputmode="numeric" min="1" placeholder="例：1000"></div>
+    ${hint}
+    <div class="field"><label for="payDate">日付</label><input id="payDate" type="date" value="${todayKey()}" max="${todayKey()}"></div>
+    <div class="field"><label for="payNote">メモ（なくても大丈夫）</label><input id="payNote" type="text" maxlength="40"></div>
+    <div class="sheet-actions">
+      <button class="btn" type="button" onclick="closeSheet()">やめる</button>
+      <button class="btn btn-sky" type="button" onclick="savePayment('${type}')">記録する</button>
+    </div>`);
+}
+function savePayment(type){
+  const amount = Math.round(Number(document.getElementById('payAmount').value) || 0);
+  const date = document.getElementById('payDate').value || todayKey();
+  const note = document.getElementById('payNote').value.trim();
+  if (amount <= 0){ showToast('金額を入力してください'); return; }
+  const pays = getPayments();
+  pays.push({ id: uid(), type, amount, date, note, createdAt: new Date().toISOString() });
+  setPayments(pays);
+  closeSheet();
+  showToast('記録しました');
+  renderPay();
+}
+function deletePayment(id){
+  const p = getPayments().find(x => x.id === id);
+  if (!p) return;
+  if (!confirm(`${p.type === 'advance' ? '先払い' : '受け取り'} ${yen(p.amount)}（${labelMJ(p.date)}）の履歴を消しますか？`)) return;
+  setPayments(getPayments().filter(x => x.id !== id));
+  showToast('消しました');
+  renderPay();
+}
+
+/* ================================================================== */
+/* レポート                                                              */
+/* ================================================================== */
+/* 書式: 見出し → 空行 → 合計 → 空行 → 家事ごとの内訳・見送り → 空行 → もらえる分/返す分 */
+function buildReportText(monKey){
+  const tk = todayKey();
+  const sun = addDays(monKey, 6);
+  const end = sun < tk ? sun : tk;
+  const st = weekStats(monKey, end);
+  const tasks = getSettings().tasks;
+  const t = totals();
+
+  const lines = Object.keys(st.byTask)
+    .sort((a, b) => tasks.findIndex(x => x.id === a) - tasks.findIndex(x => x.id === b))
+    .map(tid => {
+      const b = st.byTask[tid];
+      const task = tasks.find(x => x.id === tid);
+      const q = QUALITY.filter(x => b.q[x.key]).map(x => `${x.mark}${b.q[x.key]}`).join(' ');
+      return `${task ? task.name : '（削除した家事）'} ${b.count}回 ${yen(b.amount)}（${q}）`;
+    });
+
+  return [
+    `Yay Job ${labelMDShort(monKey)}〜${labelMDShort(end)}`,
+    '',
+    `やった家事 ${st.count}回 / ${st.minutes}分 / ${yen(st.amount)}`,
+    '',
+    ...(lines.length ? lines : ['（記録なし）']),
+    `見送り ${st.skips}回`,
+    '',
+    `もらえる分 ${yen(t.get)}`,
+    `返す分 ${yen(t.owe)}`
+  ].join('\n');
+}
+
+function changeReportWeek(n){
+  const next = addDays(state.reportMon, 7 * n);
+  if (next > mondayOf(todayKey())) return;
+  state.reportMon = next;
+  renderReport();
+}
+function renderReport(){
+  const mon = state.reportMon;
+  const isThis = mon === mondayOf(todayKey());
+  const text = buildReportText(mon);
+  const reports = getReports().slice().sort((a, b) => b.weekKey.localeCompare(a.weekKey));
+  const hist = reports.length ? reports.map(r => `
+    <div class="li">
+      <div class="li-main">${esc(r.label)}<div class="sub">保存 ${r.savedAt ? labelMJ(toKey(new Date(r.savedAt))) : ''}</div></div>
+      <button class="btn" type="button" style="min-height:44px" onclick="copyHistoryReport('${esc(r.weekKey)}')">コピー</button>
+      <button class="icon-btn" type="button" aria-label="この履歴を消す" onclick="deleteHistoryReport('${esc(r.weekKey)}')">${I.trash}</button>
+    </div>`).join('') : '<div class="empty">保存した履歴はありません</div>';
+
+  document.getElementById('screen-report').innerHTML = `
+    <div class="titlebar">
+      <div>
+        <h1 class="sm">${isThis ? '今週' : 'この週'}のレポート</h1>
+        <div class="sub">${labelMDJ(mon)} 〜 ${labelMDJ(addDays(mon, 6))}</div>
+      </div>
+      <div class="navbtns">
+        <button class="circle-btn" type="button" aria-label="前の週" onclick="changeReportWeek(-1)">${I.chevL}</button>
+        <button class="circle-btn" type="button" aria-label="次の週" onclick="changeReportWeek(1)" ${isThis ? 'disabled' : ''}>${I.chevR}</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="preview" id="reportPreview">${esc(text)}</div>
+      <div class="btn-col">
+        <button class="btn btn-sky btn-block" type="button" onclick="shareReport()">LINEで送る</button>
+        <button class="btn btn-block" type="button" onclick="copyReport()">文章をコピー</button>
+        <button class="btn btn-block" type="button" onclick="saveReportToHistory()">この週を履歴に保存</button>
+      </div>
+      <p class="small">見送りの回数は、家族への合図として載せています。</p>
+    </div>
+    <div class="section-title">保存した履歴</div>
+    <div class="list">${hist}</div>`;
+}
+
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); return true; }
+  catch{
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand('copy'); ta.remove(); return ok;
+    }catch{ return false; }
+  }
+}
+async function shareReport(){
+  const text = buildReportText(state.reportMon);
+  if (navigator.share){
+    try{ await navigator.share({ text }); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  showToast(await copyText(text) ? 'コピーしました。LINEに貼り付けて送ってください' : 'コピーできませんでした');
+}
+async function copyReport(){
+  showToast(await copyText(buildReportText(state.reportMon)) ? 'コピーしました' : 'コピーできませんでした');
+}
+function saveReportToHistory(){
+  const mon = state.reportMon;
+  const entry = { weekKey: mon, label: `${labelMDShort(mon)}〜${labelMDShort(addDays(mon, 6))}`, text: buildReportText(mon), savedAt: new Date().toISOString() };
+  const reports = getReports().filter(r => r.weekKey !== mon);
+  reports.push(entry);
   setReports(reports);
   showToast('履歴に保存しました');
-  renderReportHistory();
+  renderReport();
 }
-
-function renderReportHistory() {
-  const reports = getReports().slice().sort((a, b) => b.weekKey.localeCompare(a.weekKey));
-  const el = document.getElementById('reportHistoryList');
-  if (!reports.length) {
-    el.innerHTML = '<div class="empty">保存された履歴はありません</div>';
-    return;
-  }
-  el.innerHTML = reports.map(r => `
-    <div class="pay-row">
-      <div class="pay-info">
-        <div class="pay-name">${r.label}</div>
-        <div class="pay-detail">保存: ${new Date(r.savedAt).getMonth()+1}/${new Date(r.savedAt).getDate()}</div>
-      </div>
-      <div class="pay-actions">
-        <button class="btn btn-primary" onclick="copyHistoryReport('${r.weekKey}')">コピー</button>
-        <button class="btn btn-danger" onclick="deleteHistoryReport('${r.weekKey}')">削除</button>
-      </div>
-    </div>`).join('');
-}
-
-function copyHistoryReport(weekKey) {
+async function copyHistoryReport(weekKey){
   const r = getReports().find(x => x.weekKey === weekKey);
   if (!r) return;
-  navigator.clipboard.writeText(r.text).then(() => showToast('コピーしました！'));
+  showToast(await copyText(r.text) ? 'コピーしました' : 'コピーできませんでした');
 }
-
-function deleteHistoryReport(weekKey) {
-  if (!confirm('この履歴を削除しますか？')) return;
+function deleteHistoryReport(weekKey){
+  if (!confirm('この履歴を消しますか？')) return;
   setReports(getReports().filter(x => x.weekKey !== weekKey));
-  showToast('削除しました');
-  renderReportHistory();
+  showToast('消しました');
+  renderReport();
 }
 
-function copyReport() {
-  navigator.clipboard.writeText(document.getElementById('reportText').textContent).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = 'コピーしました！';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'LINEにコピー'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-
-function renderSettings() {
-  const tasks = getTasks();
-  const el = document.getElementById('adminTaskList');
-  if (!tasks.length) { el.innerHTML = '<div class="empty">タスクがまだありません</div>'; return; }
-  el.innerHTML = tasks.map(t => `
-    <div class="admin-task-row">
-      <div class="admin-task-info">
-        <div class="admin-task-name">${t.name}</div>
-        <div class="admin-task-meta">¥${t.pay}（¥${t.payPer15}/15分 × ${t.duration}分） · ${(t.days||[]).map(d=>DAYS[DAYS_FULL.indexOf(d)]).join('')}${t.startTime?' 作業OK:'+t.startTime+(t.endTime?'〜'+t.endTime:''):''}</div>
-      </div>
-      <button class="btn btn-danger" onclick="deleteTask('${t.id}')">削除</button>
+/* ================================================================== */
+/* 設定                                                                 */
+/* ================================================================== */
+function renderSettings(){
+  const s = getSettings();
+  const rates = QUALITY.map(q => `
+    <div class="rate-row">
+      <b>${q.mark} ${q.label}</b>
+      <input type="number" inputmode="numeric" min="0" max="100" id="rate-${q.key}" value="${Math.round(s.qualityRates[q.key] * 100)}" aria-label="${q.label}の割合（%）">
+      <em>% ／ ${yen(calcAmount(200, q.key, s.qualityRates))}</em>
     </div>`).join('');
-}
+  const chores = activeTasks().map(t => `
+    <div class="li">
+      <div class="abbr" aria-hidden="true">${esc(t.abbr)}</div>
+      <div class="li-main">${esc(t.name)}<div class="sub">${t.minutes}分・週${t.maxPerWeek}回まで${t.weekdaysLabel ? '・' + esc(t.weekdaysLabel) : ''}</div></div>
+      <div class="li-num">${yen(t.baseAmount)}</div>
+    </div>`).join('');
+  const snap = gs(SNAPSHOT_KEY, null);
+  const legacy = snap ? `
+    <div class="card" style="margin-top:14px">
+      <div class="money-lb" style="margin-bottom:6px">以前のバージョンの記録</div>
+      <p class="small" style="margin-top:0">以前のバージョン（v7）の記録は、この端末に別に保存してあります（${snap.savedAt ? labelMJ(toKey(new Date(snap.savedAt))) : ''}）。新しい画面とお手当の計算には含めていません。バックアップを書き出すと、一緒に保存されます。</p>
+    </div>` : '';
 
-function addTask() {
-  const name = document.getElementById('taskName').value.trim();
-  const payPer15 = document.getElementById('taskPay').value;
-  const duration = document.getElementById('taskDuration').value;
-  const startTime = document.getElementById('taskStart').value;
-  const endTime = document.getElementById('taskEnd').value;
-  const quality = document.getElementById('taskQuality').value.trim();
-  const days = Array.from(document.querySelectorAll('.day-check.selected')).map(b => b.dataset.day);
-  if (!name || !payPer15 || !duration || !days.length) {
-    showToast('タスク名・対価・所要時間・曜日を入力してください'); return;
+  document.getElementById('screen-settings').innerHTML = `
+    <div class="titlebar"><div><h1 class="sm">設定</h1></div></div>
+    <div class="card" style="margin-top:16px">
+      <div class="money-lb" style="margin-bottom:4px">できばえとお手当の割合</div>
+      ${rates}
+      <button class="btn btn-sky btn-block" type="button" style="margin-top:12px" onclick="saveRates()">割合を保存</button>
+      <p class="small">これから記録する分と、できばえを押し直した分に使われます。</p>
+    </div>
+    <div class="section-title">家事の一覧</div>
+    <div class="list">${chores}</div>
+    <div class="card" style="margin-top:18px">
+      <div class="money-lb" style="margin-bottom:10px">バックアップ</div>
+      <div class="btn-col" style="margin-top:0">
+        <button class="btn btn-block" type="button" onclick="exportBackup()">書き出す（JSON）</button>
+        <button class="btn btn-block" type="button" onclick="document.getElementById('importFile').click()">読み込む</button>
+      </div>
+      <p class="small">記録はこの端末の中だけに保存されています。機種変更の前や、ときどき書き出して保存してください。</p>
+    </div>
+    ${legacy}
+    <p class="small" style="text-align:center;margin-top:18px">Yay Job ${APP_VERSION}</p>`;
+}
+function saveRates(){
+  const s = getSettings();
+  for (const q of QUALITY){
+    const v = Number(document.getElementById('rate-' + q.key).value);
+    if (!isFinite(v) || v < 0 || v > 100){ showToast('0〜100の数字を入れてください'); return; }
+    s.qualityRates[q.key] = v / 100;
   }
-  const tasks = getTasks();
-  tasks.push({ id: Date.now().toString(), name, payPer15: Number(payPer15), duration: Number(duration), pay: calcTotalPay(payPer15, duration), startTime, endTime, qualityCriteria: quality, days });
-  setTasks(tasks);
-  ['taskName','taskPay','taskDuration','taskStart','taskEnd','taskQuality'].forEach(id => document.getElementById(id).value = '');
-  document.querySelectorAll('.day-check.selected').forEach(b => b.classList.remove('selected'));
-  showToast('タスクを追加しました！');
+  setSettings(s);
+  showToast('割合を保存しました');
   renderSettings();
-  renderToday();
 }
 
-function deleteTask(id) {
-  if (!confirm('このタスクを削除しますか？')) return;
-  setTasks(getTasks().filter(t => t.id !== id));
-  showToast('削除しました');
-  renderSettings();
-  renderToday();
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-function exportBackup() {
+/* ================================================================== */
+/* バックアップ                                                           */
+/* ================================================================== */
+function collectData(excludeKeys){
   const data = {};
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key && key.startsWith('yayjob_')) data[key] = localStorage.getItem(key);
+  for (let i = 0; i < localStorage.length; i++){
+    const k = localStorage.key(i);
+    if (k && k.startsWith(LS_PREFIX) && !(excludeKeys || []).includes(k)) data[k] = localStorage.getItem(k);
   }
-  const payload = { backupVersion: 1, exportedAt: new Date().toISOString(), data };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const today = new Date();
-  const ymd = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  return data;
+}
+async function exportBackup(){
+  const payload = {
+    backupVersion: 2, app: 'yayjob', schema: SCHEMA, appVersion: APP_VERSION,
+    exportedAt: new Date().toISOString(),
+    data: collectData([LS_PREFIX + PREIMPORT_KEY])
+  };
+  const json = JSON.stringify(payload, null, 2);
+  const name = `yayjob-backup-${todayKey()}.json`;
+  // iPhone のホーム画面アプリではダウンロードが効かないことがあるため、共有シートを優先する
+  try{
+    const file = new File([json], name, { type: 'application/json' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })){
+      await navigator.share({ files: [file], title: name });
+      showToast('バックアップを書き出しました');
+      return;
+    }
+  }catch(e){
+    if (e && e.name === 'AbortError') return;
+  }
+  const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `yayjob-backup-${ymd}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
   showToast('バックアップを書き出しました');
 }
 
-function importBackup(event) {
+/* キーごとの中身を人が読める形にまとめる（確認画面用） */
+function describeKey(fullKey, raw){
+  const k = fullKey.slice(LS_PREFIX.length);
+  if (raw === null || raw === undefined) return 'なし';
+  let v; try{ v = JSON.parse(raw); }catch{ return '読めないデータ'; }
+  const count = (o) => Array.isArray(o) ? o.length : (o && typeof o === 'object' ? Object.keys(o).length : 0);
+  if (k === KEY.logs){
+    let done = 0, skip = 0;
+    Object.values(v || {}).forEach(d => Object.values(d || {}).forEach(e => { if (e && e.status === 'done') done++; else if (e && e.status === 'skipped') skip++; }));
+    return `完了 ${done}件・見送り ${skip}件`;
+  }
+  if (k === KEY.payments) return `${count(v)}件`;
+  if (k === KEY.reports) return `${count(v)}週分`;
+  if (k === KEY.settings) return v && Array.isArray(v.tasks) ? `家事 ${v.tasks.length}件・割合` : 'あり';
+  if (k === KEY.schema) return `形式 ${v}`;
+  if (k === 'logs') return `${count(v)}日分`;
+  if (k === 'tasks' || k === 'payments' || k === 'reports') return `${count(v)}件`;
+  if (k === SNAPSHOT_KEY) return v && v.savedAt ? `${labelMJ(toKey(new Date(v.savedAt)))} の控え` : 'あり';
+  return 'あり';
+}
+function keyLabel(fullKey){
+  const k = fullKey.slice(LS_PREFIX.length);
+  return ({
+    [KEY.logs]: '家事の記録',
+    [KEY.payments]: '支払いの履歴',
+    [KEY.reports]: 'レポートの履歴',
+    [KEY.settings]: '家事と割合の設定',
+    [KEY.schema]: 'データ形式の番号',
+    [SNAPSHOT_KEY]: '以前のバージョンの控え',
+    tasks: '以前のバージョン：家事',
+    logs: '以前のバージョン：記録',
+    payments: '以前のバージョン：支払い',
+    name: '以前のバージョン：名前',
+    reports: '以前のバージョン：レポート'
+  })[k] || k;
+}
+
+let pendingImport = null;
+function handleImportFile(event){
   const input = event.target;
   const file = input.files[0];
   if (!file) return;
@@ -842,31 +1074,91 @@ function importBackup(event) {
   reader.onload = () => {
     input.value = '';
     let payload;
-    try {
-      payload = JSON.parse(reader.result);
-    } catch {
-      showToast('ファイルの読み込みに失敗しました');
+    try{ payload = JSON.parse(reader.result); }
+    catch{ showToast('ファイルを読み込めませんでした'); return; }
+    if (!payload || typeof payload !== 'object' || ![1, 2].includes(payload.backupVersion) || !payload.data || typeof payload.data !== 'object'){
+      showToast('Yay Job のバックアップではないようです');
       return;
     }
-    if (!payload || typeof payload !== 'object' || payload.backupVersion !== 1 || !payload.data || typeof payload.data !== 'object') {
-      showToast('バックアップの形式が正しくありません');
-      return;
+    const keys = Object.keys(payload.data).filter(k => k.startsWith(LS_PREFIX) && k !== LS_PREFIX + PREIMPORT_KEY);
+    if (!keys.length){ showToast('バックアップの中身が空です'); return; }
+    for (const k of keys){
+      if (typeof payload.data[k] !== 'string'){ showToast('バックアップの中身が壊れています'); return; }
+      try{ JSON.parse(payload.data[k]); }catch{ showToast('バックアップの中身が壊れています'); return; }
     }
-    const keys = Object.keys(payload.data).filter(k => k.startsWith('yayjob_'));
-    if (!keys.length) {
-      showToast('バックアップデータが見つかりません');
-      return;
-    }
-    for (const k of keys) {
-      try { JSON.parse(payload.data[k]); }
-      catch { showToast('バックアップの内容が壊れています'); return; }
-    }
-    if (!confirm(`現在のデータを上書きして復元します（${keys.length}件）。よろしいですか？`)) return;
-    keys.forEach(k => localStorage.setItem(k, payload.data[k]));
-    location.reload();
+    pendingImport = { keys, data: payload.data };
+    const isOld = !keys.includes(LS_PREFIX + KEY.schema);
+    const order = k => { const i = [KEY.logs, KEY.payments, KEY.reports, KEY.settings, KEY.schema].indexOf(k.slice(LS_PREFIX.length)); return i < 0 ? 99 : i; };
+    const rows = keys.slice().sort((a, b) => order(a) - order(b)).map(k => {
+      const cur = localStorage.getItem(k);
+      const detail = cur === payload.data[k]
+        ? '同じ内容です（変わりません）'
+        : `いま：${describeKey(k, cur)} → ファイル：${describeKey(k, payload.data[k])}`;
+      return `<div class="diff-row"><b>${esc(keyLabel(k))}</b><span>${esc(detail)}</span></div>`;
+    }).join('');
+    openSheet(`
+      <h2>バックアップを読み込む</h2>
+      <p class="small" style="margin:0 0 10px">${payload.exportedAt ? esc(labelMJ(toKey(new Date(payload.exportedAt)))) + ' に書き出したファイルです。' : ''}次の項目が、ファイルの内容で上書きされます。</p>
+      <div class="diff">${rows}</div>
+      ${isOld ? '<p class="small" style="margin:0 0 6px">以前のバージョンの形式のファイルです。以前のバージョンのデータだけが戻り、いまの記録と支払いは変わりません。</p>' : ''}
+      <p class="small" style="margin:0">ファイルにない項目はそのまま残ります。読み込む前の状態は、この端末に1つ控えておきます。</p>
+      <div class="sheet-actions">
+        <button class="btn" type="button" onclick="pendingImport=null;closeSheet()">やめる</button>
+        <button class="btn btn-sky" type="button" onclick="applyImport()">上書きして読み込む</button>
+      </div>`);
   };
   reader.readAsText(file);
 }
+function applyImport(){
+  if (!pendingImport) return;
+  const { keys, data } = pendingImport;
+  try{
+    ss(PREIMPORT_KEY, { savedAt: new Date().toISOString(), data: collectData([LS_PREFIX + PREIMPORT_KEY]) });
+    keys.forEach(k => localStorage.setItem(k, data[k]));
+    ensureSchema();
+  }catch(e){
+    showToast('読み込みに失敗しました');
+    return;
+  }
+  pendingImport = null;
+  location.reload();
+}
+
+/* ================================================================== */
+/* シート・トースト                                                        */
+/* ================================================================== */
+function openSheet(html){
+  document.getElementById('sheet').innerHTML = html;
+  document.getElementById('overlay').hidden = false;
+}
+function closeSheet(){
+  document.getElementById('overlay').hidden = true;
+  document.getElementById('sheet').innerHTML = '';
+}
+document.getElementById('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') closeSheet(); });
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ================================================================== */
+/* 起動                                                                 */
+/* ================================================================== */
+function onResume(){
+  if (document.visibilityState !== 'visible') return;
+  const tk = todayKey();
+  if (state.followToday || state.date > tk) state.date = tk;
+  if (state.weekMon > mondayOf(tk)) state.weekMon = mondayOf(tk);
+  if (state.reportMon > mondayOf(tk)) state.reportMon = mondayOf(tk);
+  if (document.getElementById('overlay').hidden) renderCurrent();
+}
+document.addEventListener('visibilitychange', onResume);
+
+try{ ensureSchema(); }catch(e){ console.error(e); }
+switchTab('today');
 </script>
 
 <script>

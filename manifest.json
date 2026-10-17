@@ -1,13 +1,13 @@
 {
   "name": "Yay Job",
   "short_name": "Yay Job",
-  "description": "家庭内労働を管理するアプリ",
+  "description": "家事の記録とお手当の管理",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FFFBF0",
-  "theme_color": "#F5CC2F",
+  "background_color": "#FFFBEF",
+  "theme_color": "#FFE14D",
   "icons": [
     {
       "src": "icon-192.png",

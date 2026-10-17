@@ -40,4 +40,40 @@
 ## 注意
 
 - データは各端末の中だけに保存されます（端末をまたいだ共有はされません）
-- レポートタブから週次レポートをコピーして LINE に貼り付けて共有できます
+- レポートタブから週次レポートを LINE で送ったり、コピーしたりできます
+
+## 開発メモ（v8〜）
+
+### 家事とお手当
+
+- 週は月曜〜日曜。1日に完了できる家事は1つ（同じ `dailyGroup` のもの）
+- 家事ごとに週の上限（`maxPerWeek`）がある。上限はノルマではない
+- お風呂掃除は土日だけ（`weekdays: [6, 0]`）・週1回まで
+- お手当 = 基本額 × できばえの割合（◎100% / ○50% / △25%、設定で変更可）。
+  記録した時点の金額を記録側（`amount`）に保存する
+- 「見送り」は完了にも未実施にも数えず、上限や1日1つの枠も使わない
+
+### localStorage キー（すべて `yayjob_` で始まる）
+
+```
+yayjob_schema        2
+yayjob_v2_settings   { version, qualityRates:{perfect,ok,partial}, tasks:[{id,name,short,abbr,minutes,baseAmount,maxPerWeek,dailyGroup,weekdays,weekdaysLabel,criteria,active}] }
+yayjob_v2_logs       { "YYYY-MM-DD": { [taskId]: {status:'done', quality, base, minutes, amount, at} | {status:'skipped', at} } }
+yayjob_v2_payments   [{id, type:'received'|'advance', amount, date, note, createdAt}]
+yayjob_v2_reports    [{weekKey(月曜), label, text, savedAt}]
+yayjob_premigration_v7  v8 の初回起動時に、v7 のキーを丸ごと控えたもの
+yayjob_preimport_backup バックアップを読み込む直前の状態の控え
+```
+
+v7 までのキー（`yayjob_tasks / logs / payments / name / reports`）は読み書きしない。
+v7 のファイルに戻せば、移行前の状態のまま動く。
+
+### 更新するとき
+
+`index.html` / `sw.js` / `manifest.json` を変えたら、`sw.js` の `CACHE_NAME` を1つ上げる。
+
+### 動作確認
+
+```bash
+python3 -m http.server
+```
